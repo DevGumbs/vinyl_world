@@ -1,11 +1,19 @@
 # vinyl_world
 
 ## Description
-A comprehensive community platform built for vinyl lovers. Discuss favorite records, share thoughts on the latest releases, and engage in the trading and discovery of rare vinyl.
+Vinyl World is a community hub for collectors to showcase their shelves, discover new spins, and connect with fellow vinyl enthusiasts. Members can curate an e-replica of their collection, track their wishlists, browse opportunities to buy or trade, and keep the conversation going with other collectors.
 
-## Features
-* **Lobby:** A central area where users can interact, post updates, and share experiences from their record collecting journey.
-* **Inbox:** A dedicated area for members to send private messages and receive notifications about offers on records they are selling or trading.
-* **Marketplace:** A dedicated space where users can list records they have for sale or trade, and browse listings to start or build their own collection.
-* **My-Collection Display:** An area allowing users to create an electronic copy of their physical record collection to easily display and share with the community.
-* **Wishlist:** A personal tracking area for users to list the records they hope to add to their collection in the future.
+## Core Pages
+* **Lobby:** Landing page after sign-in. Collectors can browse and edit their personal collection and wishlist, maintain an e-replica of their shelves, and scroll through **The Spinboard**—an active community feed covering new releases, trending albums, and general vinyl chatter. Posts to the Spinboard originate here.
+
+![Lobby Mockup](docs/mockups/lobby_design.png)
+
+
+* **Record Row (Marketplace):** Centralized marketplace where users list records they are willing to sell or trade. Vinyl World only facilitates connections—no transactions occur on the platform—so every listing includes a contact action to reach the owner directly.
+
+![Marketplace Mockup](docs/mockups/marketplace_design.png)
+
+* **Inbox:** Message center for ongoing 
+conversations (called **Spins**) triggered from Record Row posts. When someone taps contact on a listing, both users are routed here to discuss the specific record and finalize details outside the platform.
+
+![Inbox Mockup](docs/mockups/inbox_design.png)
