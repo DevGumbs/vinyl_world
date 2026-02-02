@@ -4,6 +4,28 @@ A community platform for vinyl record collectors to discuss music, showcase thei
 
 ---
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Core Features](#core-features)
+- [Architecture](#architecture)
+  - [Architecture Diagram](#architecture-diagram)
+- [Wireframes](#wireframes)
+  - [Lobby / Home](#lobby--home)
+  - [My Collection](#my-collection)
+  - [User Dashboard](#user-dashboard)
+  - [Trade Center](#trade-center)
+- [User Stories](#user-stories)
+- [Use Cases](#use-cases)
+  - [UC-01: Register Account](#uc-01-register-account)
+  - [UC-02: Create Post](#uc-02-create-post)
+  - [UC-03: Add Record to Collection](#uc-03-add-record-to-collection)
+  - [UC-04: List Records for Trade](#uc-04-list-records-for-trade)
+  - [UC-05: Comment on Trade Listing](#uc-05-comment-on-trade-listing)
+- [UML Use Case Diagram](#uml-use-case-diagram)
+
+---
+
 ## Overview
 
 Vinyl World is a web-based application designed for vinyl collectors. The platform combines:
