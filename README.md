@@ -22,6 +22,7 @@ A community platform for vinyl record collectors to discuss music, showcase thei
   - [UC-03: Add Record to Collection](#uc-03-add-record-to-collection)
   - [UC-04: List Records for Trade](#uc-04-list-records-for-trade)
   - [UC-05: Comment on Trade Listing](#uc-05-comment-on-trade-listing)
+- [Roadmap](#roadmap)
 - [UML Use Case Diagram](#uml-use-case-diagram)
 
 ---
@@ -115,6 +116,36 @@ Vinyl World follows a simple full-stack architecture:
 **Actor:** Registered User  
 **Flow:** Open listing → add comment  
 **Result:** Comment visible in trade discussion
+
+---
+
+## Roadmap
+
+The development of Vinyl World will follow a phased approach:
+
+- **Phase 1 – Planning & Design**  
+  Finalize requirements, navigation flow, wireframes, and system diagrams.
+
+- **Phase 2 – Project Setup**  
+  Initialize React frontend, Node/Express backend, and repository structure.
+
+- **Phase 3 – Database Design**  
+  Define schema for users, posts, comments, collections, trade listings, and notifications.
+
+- **Phase 4 – Backend API Development**  
+  Implement authentication, forum, collection management, and trade endpoints.
+
+- **Phase 5 – Frontend UI Implementation**  
+  Build Lobby, My Collection, User Dashboard, and Trade Center interfaces.
+
+- **Phase 6 – Trade Center Features**  
+  Enable listing albums for trade and comment-based trade discussions.
+
+- **Phase 7 – Metadata Integration (Subject to API access)**  
+  Add album metadata lookup to assist users when adding records.
+
+- **Phase 8 – Testing & Refinement**  
+  Test core workflows, polish UI, and update documentation.
 
 ---
 
