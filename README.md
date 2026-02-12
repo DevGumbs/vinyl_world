@@ -16,6 +16,7 @@ A community platform for vinyl record collectors to discuss music, showcase thei
   - [User Dashboard](#user-dashboard)
   - [Trade Center](#trade-center)
 - [User Stories](#user-stories)
+- [Software Requirements](#software-requirements)
 - [Use Cases](#use-cases)
   - [UC-01: Register Account](#uc-01-register-account)
   - [UC-02: Create Post](#uc-02-create-post)
@@ -85,6 +86,19 @@ Vinyl World follows a simple full-stack architecture:
 3. **As a user**, I want to add records to my collection so that I can build a digital shelf.  
 4. **As a user**, I want to switch between grid and spotlight views so that I can browse or showcase my collection.  
 5. **As a user**, I want to list records for trade and receive comments so that I can discuss trade interest.
+
+---
+
+## Software Requirements
+
+| ID | Software Requirement |
+| :--- | :--- |
+| **REQ-01** | The system **shall** authenticate users through a login interface before allowing them to create posts, manage collections, or list items for trade. |
+| **REQ-02** | The system **shall** provide a forum interface (Lobby) that displays user-generated posts filtered by their assigned metadata topics. |
+| **REQ-03** | The system **shall** enable users to store and retrieve vinyl record data, including album title, artist, and a user-uploaded image, within a personal database entry. |
+| **REQ-04** | The system **shall** allow users to toggle the display of their digital collection between a "Grid View" for browsing and a "Spotlight View" for individual item focus. |
+| **REQ-05** | The system **shall** transition records from a user’s private collection to a public "Trade Center" gallery upon the user selecting the "List for Trade" status. |
+| **REQ-06** | The system **shall** facilitate public communication by displaying a chronological list of comments underneath each individual trade listing. |
 
 ---
 
