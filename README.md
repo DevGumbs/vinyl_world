@@ -10,6 +10,8 @@ A community platform for vinyl record collectors to discuss music, showcase thei
 - [Core Features](#core-features)
 - [Architecture](#architecture)
   - [Architecture Diagram](#architecture-diagram)
+  - [Entity Relationship Diagram (ERD)](#entity-relationship-diagram-erd)
+  - [UML Class Diagram](#uml-class-diagram)
 - [Wireframes](#wireframes)
   - [Lobby / Home](#lobby--home)
   - [My Collection](#my-collection)
@@ -60,6 +62,14 @@ Vinyl World follows a simple full-stack architecture:
 ### Architecture Diagram
 
 ![Architecture Diagram](images/diagrams/VW_ArchitectureDiagram.png)
+
+### Entity Relationship Diagram (ERD)
+
+![Entity Relationship Diagram](images/diagrams/ERD_VinylWorld.png)
+
+### UML Class Diagram
+
+![UML Class Diagram](images/diagrams/umlClassDiagram_vinylWorld.png)
 
 ---
 
