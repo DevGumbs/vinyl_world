@@ -1,7 +1,5 @@
 class VinylRecord {
   /**
-   * @param {object} params
-   * @param {string} params.id
    * @param {string} params.albumTitle
    * @param {string} params.artistName
    * @param {number} params.year
@@ -39,4 +37,3 @@ class VinylRecord {
 }
 
 module.exports = { VinylRecord };
-

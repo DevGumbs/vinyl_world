@@ -8,7 +8,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/trades", (req, res) => {
-  res.json(sampleRecords.filter((r) => r.isForTrade));
+  res.json(sampleRecords.filter((record) => record.isForTrade));
 });
 
 router.get("/:id", (req, res) => {
@@ -20,4 +20,3 @@ router.get("/:id", (req, res) => {
 });
 
 module.exports = { recordsRouter: router };
-

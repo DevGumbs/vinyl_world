@@ -12,6 +12,9 @@ A community platform for vinyl record collectors to discuss music, showcase thei
   - [Architecture Diagram](#architecture-diagram)
   - [Entity Relationship Diagram (ERD)](#entity-relationship-diagram-erd)
   - [UML Class Diagram](#uml-class-diagram)
+- [Data Access Layer](#data-access-layer)
+  - [Class model code](#class-model-code)
+  - [API HTTP response](#api-http-response)
 - [Wireframes](#wireframes)
   - [Lobby / Home](#lobby--home)
   - [My Collection](#my-collection)
@@ -70,6 +73,37 @@ Vinyl World follows a simple full-stack architecture:
 ### UML Class Diagram
 
 ![UML Class Diagram](images/diagrams/umlClassDiagram_vinylWorld.png)
+
+---
+
+## Data Access Layer
+
+
+| Artifact | Location |
+| :--- | :--- |
+| Model class | [`src/models/VinylRecord.js`](src/models/VinylRecord.js) |
+| Sample dataset | [`src/data/sampleRecords.js`](src/data/sampleRecords.js) |
+| API routes | [`src/routes/records.js`](src/routes/records.js) |
+| Server | [`src/server.js`](src/server.js) |
+
+Useful endpoints:
+
+- `GET /api/records` — all records
+- `GET /api/records/:id` — single record  
+- `GET /api/records/trades` — records with `isForTrade: true`  
+- `GET /health` — health check  
+
+### Class model code
+
+Screenshot of the **`VinylRecord`** class implementation in this repository:
+
+![Class model code — VinylRecord](images/data/vinylModel.png)
+
+### API HTTP response
+
+Screenshot of the HTTP response from `GET /api/records`:
+
+![API HTTP response — JSON records](images/data/apiResponse.png)
 
 ---
 
