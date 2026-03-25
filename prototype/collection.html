@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vinyl World - Collection</title>
+
+    <!-- Imported Fonts/Themes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      body {
+        font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen bg-slate-50 text-slate-900"
+  >
+    <div class="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-8">
+      <!-- Header / Top Bar -->
+      <header
+        class="mb-6 flex w-full items-stretch gap-6"
+      >
+        <!-- Logo (left / start, roughly aligned over sidebar) -->
+        <div class="flex w-[220px] items-center justify-start">
+          <img
+            src="imgs/VinylWorldLogo_LG.png"
+            alt="Vinyl World logo"
+            class="h-32 w-auto drop-shadow-[0_10px_24px_rgba(0,0,0,0.7)]"
+          />
+        </div>
+
+        <!-- Search + Nav card (right / end, fills remaining space) -->
+        <div
+          class="flex flex-1 flex-wrap items-center justify-between rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm shadow-slate-200"
+        >
+          <!-- Search -->
+          <div class="flex flex-1 justify-start">
+            <div class="flex w-full max-w-xl items-center gap-2">
+              <input
+                type="text"
+                placeholder="Search records, posts, or users"
+                class="h-10 w-full rounded-full border border-slate-300 bg-white px-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              />
+              <button
+                class="h-10 rounded-full border border-emerald-500 bg-emerald-500 px-6 text-sm font-semibold text-white transition hover:bg-emerald-500"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+
+          <!-- Nav links -->
+          <nav class="ml-6 flex items-center gap-8 text-sm">
+            <a
+              href="index.html"
+              class="text-slate-700 transition hover:text-emerald-600 hover:underline"
+            >
+              Home
+            </a>
+            <a
+              href="collection.html"
+              class="text-slate-700 transition hover:text-emerald-600 hover:underline"
+            >
+              My Collection
+            </a>
+            <a
+              href="trade.html"
+              class="text-center leading-snug text-slate-700 transition hover:text-emerald-600 hover:underline"
+            >
+              <span class="block">Trade</span>
+              <span class="block -mt-1">Center</span>
+            </a>
+            <a
+              href="dashboard.html"
+              class="text-right text-xs leading-snug text-slate-700 hover:text-emerald-600 hover:underline"
+            >
+              <span class="block">CurrentUser's</span>
+              <span class="block font-semibold underline">Username</span>
+            </a>
+          </nav>
+        </div>
+      </header>
+
+      <!-- Main layout -->
+      <main class="flex-1 space-y-6">
+        <!-- Collection header row -->
+        <section
+          class="rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm"
+        >
+          <div
+            class="flex flex-col items-start gap-3 text-sm md:flex-row md:items-center md:justify-between"
+          >
+            <div>
+              <div class="flex items-baseline gap-3">
+                <h1 class="text-lg font-semibold tracking-wide">
+                  Collection Name
+                </h1>
+                <button
+                  class="text-xs text-emerald-600 underline underline-offset-2 hover:text-emerald-600"
+                >
+                  edit
+                </button>
+              </div>
+              <p class="mt-1 text-xs text-slate-500">(My Collection)</p>
+            </div>
+
+            <div class="flex w-full items-center justify-between gap-4 md:w-auto">
+              <div class="flex items-center gap-2 text-xs text-slate-500">
+                <a
+                  href="shelf.html"
+                  class="text-slate-600 hover:text-emerald-600 hover:underline"
+                >
+                  Shelf
+                </a>
+                <span>/</span>
+                <span class="font-semibold text-emerald-600 underline">
+                  Gallery
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 md:ml-4">68 vinyls</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Top gallery strip -->
+        <section
+          class="rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-sm"
+        >
+          <div class="flex items-center justify-between gap-4">
+            <!-- Left arrow -->
+            <button
+              class="hidden h-10 w-10 items-center justify-center rounded-full border border-slate-700 text-lg text-slate-300 hover:border-rose-400 hover:text-rose-300 md:flex"
+              aria-label="Previous"
+            >
+              ←
+            </button>
+
+            <!-- Horizontal list of records -->
+            <div
+              class="flex min-w-0 flex-1 items-center gap-4 overflow-x-auto pb-2"
+            >
+              <!-- Small record card template -->
+              <div
+                class="flex h-28 w-28 flex-shrink-0 flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-[11px]"
+              >
+                <div
+                  class="mb-2 flex h-14 w-14 items-center justify-center rounded border border-slate-300 text-[11px] text-slate-700"
+                >
+                  Vinyl
+                </div>
+                <span class="text-[11px] text-slate-600">Artist</span>
+              </div>
+
+              <div
+                class="flex h-28 w-28 flex-shrink-0 flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-[11px]"
+              >
+                <div
+                  class="mb-2 flex h-14 w-14 items-center justify-center rounded border border-slate-300 text-[11px] text-slate-700"
+                >
+                  Vinyl
+                </div>
+                <span class="text-[11px] text-slate-600">Artist</span>
+              </div>
+
+              <div
+                class="flex h-28 w-28 flex-shrink-0 flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-[11px]"
+              >
+                <div
+                  class="mb-2 flex h-14 w-14 items-center justify-center rounded border border-slate-300 text-[11px] text-slate-700"
+                >
+                  Vinyl
+                </div>
+                <span class="text-[11px] text-slate-600">Artist</span>
+              </div>
+
+              <div
+                class="flex h-28 w-28 flex-shrink-0 flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-[11px]"
+              >
+                <div
+                  class="mb-2 flex h-14 w-14 items-center justify-center rounded border border-slate-300 text-[11px] text-slate-700"
+                >
+                  Vinyl
+                </div>
+                <span class="text-[11px] text-slate-600">Artist</span>
+              </div>
+
+              <div
+                class="flex h-28 w-28 flex-shrink-0 flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-[11px]"
+              >
+                <div
+                  class="mb-2 flex h-14 w-14 items-center justify-center rounded border border-slate-300 text-[11px] text-slate-700"
+                >
+                  Vinyl
+                </div>
+                <span class="text-[11px] text-slate-600">Artist</span>
+              </div>
+            </div>
+
+            <!-- Right arrow -->
+            <button
+              class="hidden h-10 w-10 items-center justify-center rounded-full border border-slate-700 text-lg text-slate-300 hover:border-rose-400 hover:text-rose-300 md:flex"
+              aria-label="Next"
+            >
+              →
+            </button>
+          </div>
+        </section>
+
+        <!-- Spotlight row -->
+        <section
+          class="grid gap-6 rounded-2xl border border-slate-200 bg-white px-6 py-6 shadow-sm md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]"
+        >
+          <!-- Large album artwork + vinyl -->
+          <div class="flex items-center justify-center">
+            <div
+              class="relative flex h-56 w-[18rem] items-center justify-center md:w-[20rem]"
+            >
+              <!-- Square album sleeve -->
+              <div
+                class="absolute left-0 z-10 flex h-56 w-56 items-center justify-center rounded border border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-md shadow-slate-400/40"
+              >
+                Vinyl
+              </div>
+
+              <!-- Vinyl disc, tucked slightly under the sleeve -->
+              <div
+                class="absolute right-0 hidden h-52 w-52 rounded-full bg-black md:block"
+              >
+                <div
+                  class="absolute inset-6 rounded-full border border-slate-900/60 bg-slate-900"
+                ></div>
+                <div
+                  class="absolute inset-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-700"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Album metadata -->
+          <div class="flex flex-col justify-center text-left md:text-left">
+            <h2 class="text-2xl font-semibold tracking-wide">Album Name</h2>
+            <p class="mt-3 text-sm font-semibold">Artist Name</p>
+            <p class="mt-2 text-sm text-slate-300">Year | Genre</p>
+
+            <p class="mt-6 text-xs text-slate-400">
+              Click a record in the gallery row to spotlight it here and see more
+              details about the release.
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-6 text-center text-sm text-slate-600">
+        Vinyl World
+      </footer>
+    </div>
+  </body>
+</html>

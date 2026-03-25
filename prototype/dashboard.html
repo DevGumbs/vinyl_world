@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vinyl World - Dashboard</title>
+
+    <!-- Imported Fonts/Themes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      body {
+        font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen bg-slate-50 text-slate-900"
+  >
+    <div class="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-8">
+      <!-- Header / Top Bar -->
+      <header
+        class="mb-6 flex w-full items-stretch gap-6"
+      >
+        <!-- Logo (left / start, roughly aligned over sidebar) -->
+        <div class="flex w-[220px] items-center justify-start">
+          <img
+            src="imgs/VinylWorldLogo_LG.png"
+            alt="Vinyl World logo"
+            class="h-32 w-auto drop-shadow-[0_10px_24px_rgba(0,0,0,0.7)]"
+          />
+        </div>
+
+        <!-- Search + Nav card (right / end, fills remaining space) -->
+        <div
+          class="flex flex-1 flex-wrap items-center justify-between rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm shadow-slate-200"
+        >
+          <!-- Search -->
+          <div class="flex flex-1 justify-start">
+            <div class="flex w-full max-w-xl items-center gap-2">
+              <input
+                type="text"
+                placeholder="Search records, posts, or users"
+                class="h-10 w-full rounded-full border border-slate-300 bg-white px-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              />
+              <button
+                class="h-10 rounded-full border border-emerald-500 bg-emerald-500 px-6 text-sm font-semibold text-white transition hover:bg-emerald-500"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+
+          <!-- Nav links -->
+          <nav class="ml-6 flex items-center gap-8 text-sm">
+            <a
+              href="index.html"
+              class="text-slate-700 transition hover:text-emerald-600 hover:underline"
+            >
+              Home
+            </a>
+            <a
+              href="collection.html"
+              class="text-slate-700 transition hover:text-emerald-600 hover:underline"
+            >
+              My Collection
+            </a>
+            <a
+              href="trade.html"
+              class="text-center leading-snug text-slate-700 transition hover:text-emerald-600 hover:underline"
+            >
+              <span class="block">Trade</span>
+              <span class="block -mt-1">Center</span>
+            </a>
+            <a
+              href="dashboard.html"
+              class="text-right text-xs leading-snug text-slate-700 hover:text-emerald-600 hover:underline"
+            >
+              <span class="block">CurrentUser's</span>
+              <span class="block font-semibold underline">Username</span>
+            </a>
+          </nav>
+        </div>
+      </header>
+
+      <!-- Main layout -->
+      <main class="flex-1 space-y-6">
+        <!-- User header: name + bio -->
+        <section
+          class="rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm"
+        >
+          <div class="flex flex-col gap-2 text-sm md:flex-row md:items-center">
+            <div class="flex items-baseline gap-2">
+              <span class="text-lg font-semibold">UserName</span>
+              <span class="text-sm text-slate-400">- Bio / User Description</span>
+            </div>
+          </div>
+          <p class="mt-1 text-xs text-slate-400">(City, ST)</p>
+        </section>
+
+        <!-- Collection Stats -->
+        <section
+          class="rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-sm"
+        >
+          <h2 class="mb-4 text-center text-sm font-semibold tracking-wide">
+            Collection Stats
+          </h2>
+
+          <div class="grid gap-3 text-xs sm:grid-cols-3 lg:grid-cols-5">
+            <!-- Stat tiles -->
+            <div
+              class="flex flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center"
+            >
+              <p class="text-[11px] text-slate-300">Total Records:</p>
+              <p class="mt-1 text-base font-semibold">60</p>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center"
+            >
+              <p class="text-[11px] text-slate-300">Most Collected Artist:</p>
+              <p class="mt-1 text-sm font-semibold">The Beatles</p>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center"
+            >
+              <p class="text-[11px] text-slate-300">Most Collected Genre:</p>
+              <p class="mt-1 text-sm font-semibold">Jazz</p>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center"
+            >
+              <p class="text-[11px] text-slate-300">Estimated Collection Value:</p>
+              <p class="mt-1 text-sm font-semibold">$1625</p>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center"
+            >
+              <p class="text-[11px] text-slate-300">Most Active Era:</p>
+              <p class="mt-1 text-sm font-semibold">1980s</p>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center"
+            >
+              <p class="text-[11px] text-slate-300">Collection Spans:</p>
+              <p class="mt-1 text-sm font-semibold">1982 - 2022</p>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center"
+            >
+              <p class="text-[11px] text-slate-300">Most Recent Addition:</p>
+              <p class="mt-1 text-sm font-semibold">Be - Common</p>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center"
+            >
+              <p class="text-[11px] text-slate-300">Records Marked for Trade:</p>
+              <p class="mt-1 text-sm font-semibold">9</p>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center"
+            >
+              <p class="text-[11px] text-slate-300">Unique Artists Collected:</p>
+              <p class="mt-1 text-base font-semibold">34</p>
+            </div>
+
+            <div
+              class="flex flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center"
+            >
+              <p class="text-[11px] text-slate-300">
+                Different Genres Collected:
+              </p>
+              <p class="mt-1 text-base font-semibold">18</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Collection details + Management -->
+        <section class="grid gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(220px,1fr)]">
+          <!-- Collection details grid -->
+          <div
+            class="rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-sm"
+          >
+            <div
+              class="mb-4 flex items-center justify-between text-sm font-semibold tracking-wide"
+            >
+              <h2>Collection Details</h2>
+              <a
+                href="shelf.html"
+                class="text-xs font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-600"
+              >
+                Grid View
+              </a>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+              <!-- Album card template -->
+              <article
+                class="flex flex-col items-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center text-xs"
+              >
+                <div
+                  class="mb-3 flex h-16 w-16 items-center justify-center rounded border border-slate-600 text-[11px] text-slate-200"
+                >
+                  Vinyl
+                </div>
+                <p class="text-sm font-semibold">Album Name</p>
+                <p class="mt-1 text-[11px] text-slate-400">Artist Name</p>
+              </article>
+
+              <article
+                class="flex flex-col items-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center text-xs"
+              >
+                <div
+                  class="mb-3 flex h-16 w-16 items-center justify-center rounded border border-slate-600 text-[11px] text-slate-200"
+                >
+                  Vinyl
+                </div>
+                <p class="text-sm font-semibold">Album Name</p>
+                <p class="mt-1 text-[11px] text-slate-400">Artist Name</p>
+              </article>
+
+              <article
+                class="flex flex-col items-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center text-xs"
+              >
+                <div
+                  class="mb-3 flex h-16 w-16 items-center justify-center rounded border border-slate-600 text-[11px] text-slate-200"
+                >
+                  Vinyl
+                </div>
+                <p class="text-sm font-semibold">Album Name</p>
+                <p class="mt-1 text-[11px] text-slate-400">Artist Name</p>
+              </article>
+
+              <article
+                class="flex flex-col items-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center text-xs"
+              >
+                <div
+                  class="mb-3 flex h-16 w-16 items-center justify-center rounded border border-slate-600 text-[11px] text-slate-200"
+                >
+                  Vinyl
+                </div>
+                <p class="text-sm font-semibold">Album Name</p>
+                <p class="mt-1 text-[11px] text-slate-400">Artist Name</p>
+              </article>
+
+              <article
+                class="flex flex-col items-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center text-xs"
+              >
+                <div
+                  class="mb-3 flex h-16 w-16 items-center justify-center rounded border border-slate-600 text-[11px] text-slate-200"
+                >
+                  Vinyl
+                </div>
+                <p class="text-sm font-semibold">Album Name</p>
+                <p class="mt-1 text-[11px] text-slate-400">Artist Name</p>
+              </article>
+
+              <article
+                class="flex flex-col items-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center text-xs"
+              >
+                <div
+                  class="mb-3 flex h-16 w-16 items-center justify-center rounded border border-slate-600 text-[11px] text-slate-200"
+                >
+                  Vinyl
+                </div>
+                <p class="text-sm font-semibold">Album Name</p>
+                <p class="mt-1 text-[11px] text-slate-400">Artist Name</p>
+              </article>
+            </div>
+
+            <div
+              class="mt-4 flex flex-col justify-between gap-3 text-xs text-emerald-600 sm:flex-row"
+            >
+              <button class="underline underline-offset-2 hover:text-emerald-600">
+                Add/Edit
+              </button>
+              <button class="underline underline-offset-2 hover:text-emerald-600">
+                View Full Collection
+              </button>
+            </div>
+          </div>
+
+          <!-- Management panel -->
+          <aside
+            class="rounded-2xl border border-slate-200 bg-white px-5 py-5 shadow-sm text-sm"
+          >
+            <h2 class="mb-4 text-center text-sm font-semibold tracking-wide">
+              Management
+            </h2>
+
+            <ul class="space-y-4 text-xs">
+              <li class="flex items-center gap-3">
+                <div
+                  class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-[14px] text-emerald-600"
+                >
+                  👤
+                </div>
+                <span>Manage Details</span>
+              </li>
+              <li class="flex items-center gap-3">
+                <div
+                  class="flex h-8 w-8 items-center justify-center rounded-md bg-slate-900 text-[14px] text-emerald-600"
+                >
+                  📝
+                </div>
+                <span>Manage Posts</span>
+              </li>
+              <li class="flex items-center gap-3">
+                <div
+                  class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-[14px] text-emerald-600"
+                >
+                  ⚙️
+                </div>
+                <span>Settings</span>
+              </li>
+            </ul>
+          </aside>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-6 text-center text-sm text-slate-600">
+        Vinyl World
+      </footer>
+    </div>
+  </body>
+</html>

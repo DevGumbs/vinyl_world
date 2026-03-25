@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vinyl World - Shelf View</title>
+
+    <!-- Imported Fonts/Themes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      body {
+        font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen bg-slate-50 text-slate-900"
+  >
+    <div class="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-8">
+      <!-- Header / Top Bar -->
+      <header
+        class="mb-6 flex w-full items-stretch gap-6"
+      >
+        <!-- Logo (left / start, roughly aligned over sidebar) -->
+        <div class="flex w-[220px] items-center justify-start">
+          <img
+            src="imgs/VinylWorldLogo_LG.png"
+            alt="Vinyl World logo"
+            class="h-32 w-auto drop-shadow-[0_10px_24px_rgba(0,0,0,0.7)]"
+          />
+        </div>
+
+        <!-- Search + Nav card (right / end, fills remaining space) -->
+        <div
+          class="flex flex-1 flex-wrap items-center justify-between rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm shadow-slate-200"
+        >
+          <!-- Search -->
+          <div class="flex flex-1 justify-start">
+            <div class="flex w-full max-w-xl items-center gap-2">
+              <input
+                type="text"
+                placeholder="Search records, posts, or users"
+                class="h-10 w-full rounded-full border border-slate-300 bg-white px-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              />
+              <button
+                class="h-10 rounded-full border border-emerald-500 bg-emerald-500 px-6 text-sm font-semibold text-white transition hover:bg-emerald-500"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+
+          <!-- Nav links -->
+          <nav class="ml-6 flex items-center gap-8 text-sm">
+            <a
+              href="index.html"
+              class="text-slate-700 transition hover:text-emerald-600 hover:underline"
+            >
+              Home
+            </a>
+            <a
+              href="collection.html"
+              class="text-slate-700 transition hover:text-emerald-600 hover:underline"
+            >
+              My Collection
+            </a>
+            <a
+              href="trade.html"
+              class="text-center leading-snug text-slate-700 transition hover:text-emerald-600 hover:underline"
+            >
+              <span class="block">Trade</span>
+              <span class="block -mt-1">Center</span>
+            </a>
+            <a
+              href="dashboard.html"
+              class="text-right text-xs leading-snug text-slate-700 hover:text-emerald-600 hover:underline"
+            >
+              <span class="block">CurrentUser's</span>
+              <span class="block font-semibold underline">Username</span>
+            </a>
+          </nav>
+        </div>
+      </header>
+
+      <!-- Main layout -->
+      <main class="flex-1 space-y-6">
+        <!-- Title and background options -->
+        <section
+          class="rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm"
+        >
+          <div
+            class="flex flex-col gap-3 text-sm md:flex-row md:items-center md:justify-between"
+          >
+            <div>
+              <div class="flex items-baseline gap-3">
+                <h1 class="text-lg font-semibold tracking-wide">View</h1>
+                <div class="flex items-center gap-2 text-xs text-slate-500">
+                  <span class="font-semibold text-emerald-600 underline">
+                    Shelf
+                  </span>
+                  <span>/</span>
+                  <a
+                    href="collection.html"
+                    class="text-slate-600 hover:text-emerald-600 hover:underline"
+                  >
+                    Gallery
+                  </a>
+                </div>
+              </div>
+              <p class="mt-1 text-xs text-slate-500">
+                Browse your collection as if it were on a physical shelf.
+              </p>
+            </div>
+
+            <!-- Background selection -->
+            <div class="flex flex-col gap-1 text-xs text-slate-700">
+              <span class="font-semibold">Select Shelf</span>
+              <div class="flex flex-wrap items-center gap-4">
+                <label class="inline-flex items-center gap-1">
+                  <input
+                    id="bgVintage"
+                    type="radio"
+                    name="shelfBackground"
+                    checked
+                    class="h-3.5 w-3.5 text-emerald-600 focus:ring-emerald-500"
+                  />
+                  <span>Vintage (default)</span>
+                </label>
+                <label class="inline-flex items-center gap-1">
+                  <input
+                    id="bgModern"
+                    type="radio"
+                    name="shelfBackground"
+                    class="h-3.5 w-3.5 text-emerald-600 focus:ring-emerald-500"
+                  />
+                  <span>Modern</span>
+                </label>
+                <label class="inline-flex items-center gap-1">
+                  <input
+                    id="bgRetro"
+                    type="radio"
+                    name="shelfBackground"
+                    class="h-3.5 w-3.5 text-emerald-600 focus:ring-emerald-500"
+                  />
+                  <span>Retro</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Shelves over background image (vintage or modern) -->
+        <section class="flex">
+          <div
+            id="shelfBackground"
+            class="relative w-full min-h-[420px] max-h-[70vh] rounded-3xl border border-slate-800 bg-cover bg-center bg-no-repeat shadow-[0_32px_80px_rgba(0,0,0,1)]"
+          >
+            <div
+              class="absolute inset-0 rounded-3xl bg-slate-950/35"
+            ></div>
+
+            <!-- Records and shelves -->
+            <div
+              class="relative flex h-full flex-col justify-center gap-8 px-8 py-8"
+            >
+              <!-- Row 1 -->
+              <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
+                  <div class="flex flex-col items-center text-[11px]">
+                    <div class="flex flex-col items-center">
+                      <div
+                        class="mb-2 h-24 w-24 rounded-md border border-slate-300 bg-slate-900/80 shadow-md shadow-black/70"
+                      ></div>
+                      <div
+                        class="h-2 w-24 rounded-full bg-black shadow-[0_8px_18px_rgba(0,0,0,0.9)]"
+                      ></div>
+                    </div>
+                    <p class="font-semibold text-slate-50">Album Title</p>
+                    <p class="text-[10px] text-slate-300">Artist Name</p>
+                  </div>
+                  <div class="flex flex-col items-center text-[11px]">
+                    <div class="flex flex-col items-center">
+                      <div
+                        class="mb-2 h-24 w-24 rounded-md border border-slate-300 bg-slate-900/80 shadow-md shadow-black/70"
+                      ></div>
+                      <div
+                        class="h-2 w-24 rounded-full bg-black shadow-[0_8px_18px_rgba(0,0,0,0.9)]"
+                      ></div>
+                    </div>
+                    <p class="font-semibold text-slate-50">Album Title</p>
+                    <p class="text-[10px] text-slate-300">Artist Name</p>
+                  </div>
+                  <div class="flex flex-col items-center text-[11px]">
+                    <div class="flex flex-col items-center">
+                      <div
+                        class="mb-2 h-24 w-24 rounded-md border border-slate-300 bg-slate-900/80 shadow-md shadow-black/70"
+                      ></div>
+                      <div
+                        class="h-2 w-24 rounded-full bg-black shadow-[0_8px_18px_rgba(0,0,0,0.9)]"
+                      ></div>
+                    </div>
+                    <p class="font-semibold text-slate-50">Album Title</p>
+                    <p class="text-[10px] text-slate-300">Artist Name</p>
+                  </div>
+                  <div class="flex flex-col items-center text-[11px]">
+                    <div class="flex flex-col items-center">
+                      <div
+                        class="mb-2 h-24 w-24 rounded-md border border-slate-300 bg-slate-900/80 shadow-md shadow-black/70"
+                      ></div>
+                      <div
+                        class="h-2 w-24 rounded-full bg-black shadow-[0_8px_18px_rgba(0,0,0,0.9)]"
+                      ></div>
+                    </div>
+                    <p class="font-semibold text-slate-50">Album Title</p>
+                    <p class="text-[10px] text-slate-300">Artist Name</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Row 2 -->
+              <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
+                  <div class="flex flex-col items-center text-[11px]">
+                    <div class="flex flex-col items-center">
+                      <div
+                        class="mb-2 h-24 w-24 rounded-md border border-slate-300 bg-slate-900/80 shadow-md shadow-black/70"
+                      ></div>
+                      <div
+                        class="h-2 w-24 rounded-full bg-black shadow-[0_8px_18px_rgba(0,0,0,0.9)]"
+                      ></div>
+                    </div>
+                    <p class="font-semibold text-slate-50">Album Title</p>
+                    <p class="text-[10px] text-slate-300">Artist Name</p>
+                  </div>
+                  <div class="flex flex-col items-center text-[11px]">
+                    <div class="flex flex-col items-center">
+                      <div
+                        class="mb-2 h-24 w-24 rounded-md border border-slate-300 bg-slate-900/80 shadow-md shadow-black/70"
+                      ></div>
+                      <div
+                        class="h-2 w-24 rounded-full bg-black shadow-[0_8px_18px_rgba(0,0,0,0.9)]"
+                      ></div>
+                    </div>
+                    <p class="font-semibold text-slate-50">Album Title</p>
+                    <p class="text-[10px] text-slate-300">Artist Name</p>
+                  </div>
+                  <div class="flex flex-col items-center text-[11px]">
+                    <div class="flex flex-col items-center">
+                      <div
+                        class="mb-2 h-24 w-24 rounded-md border border-slate-300 bg-slate-900/80 shadow-md shadow-black/70"
+                      ></div>
+                      <div
+                        class="h-2 w-24 rounded-full bg-black shadow-[0_8px_18px_rgba(0,0,0,0.9)]"
+                      ></div>
+                    </div>
+                    <p class="font-semibold text-slate-50">Album Title</p>
+                    <p class="text-[10px] text-slate-300">Artist Name</p>
+                  </div>
+                  <div class="flex flex-col items-center text-[11px]">
+                    <div class="flex flex-col items-center">
+                      <div
+                        class="mb-2 h-24 w-24 rounded-md border border-slate-300 bg-slate-900/80 shadow-md shadow-black/70"
+                      ></div>
+                      <div
+                        class="h-2 w-24 rounded-full bg-black shadow-[0_8px_18px_rgba(0,0,0,0.9)]"
+                      ></div>
+                    </div>
+                    <p class="font-semibold text-slate-50">Album Title</p>
+                    <p class="text-[10px] text-slate-300">Artist Name</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Row 3 -->
+              <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
+                  <div class="flex flex-col items-center text-[11px]">
+                    <div class="flex flex-col items-center">
+                      <div
+                        class="mb-2 h-24 w-24 rounded-md border border-slate-300 bg-slate-900/80 shadow-md shadow-black/70"
+                      ></div>
+                      <div
+                        class="h-2 w-24 rounded-full bg-black shadow-[0_8px_18px_rgba(0,0,0,0.9)]"
+                      ></div>
+                    </div>
+                    <p class="font-semibold text-slate-50">Album Title</p>
+                    <p class="text-[10px] text-slate-300">Artist Name</p>
+                  </div>
+                  <div class="flex flex-col items-center text-[11px]">
+                    <div class="flex flex-col items-center">
+                      <div
+                        class="mb-2 h-24 w-24 rounded-md border border-slate-300 bg-slate-900/80 shadow-md shadow-black/70"
+                      ></div>
+                      <div
+                        class="h-2 w-24 rounded-full bg-black shadow-[0_8px_18px_rgba(0,0,0,0.9)]"
+                      ></div>
+                    </div>
+                    <p class="font-semibold text-slate-50">Album Title</p>
+                    <p class="text-[10px] text-slate-300">Artist Name</p>
+                  </div>
+                  <div class="flex flex-col items-center text-[11px]">
+                    <div class="flex flex-col items-center">
+                      <div
+                        class="mb-2 h-24 w-24 rounded-md border border-slate-300 bg-slate-900/80 shadow-md shadow-black/70"
+                      ></div>
+                      <div
+                        class="h-2 w-24 rounded-full bg-black shadow-[0_8px_18px_rgba(0,0,0,0.9)]"
+                      ></div>
+                    </div>
+                    <p class="font-semibold text-slate-50">Album Title</p>
+                    <p class="text-[10px] text-slate-300">Artist Name</p>
+                  </div>
+                  <div class="flex flex-col items-center text-[11px]">
+                    <div class="flex flex-col items-center">
+                      <div
+                        class="mb-2 h-24 w-24 rounded-md border border-slate-300 bg-slate-900/80 shadow-md shadow-black/70"
+                      ></div>
+                      <div
+                        class="h-2 w-24 rounded-full bg-black shadow-[0_8px_18px_rgba(0,0,0,0.9)]"
+                      ></div>
+                    </div>
+                    <p class="font-semibold text-slate-50">Album Title</p>
+                    <p class="text-[10px] text-slate-300">Artist Name</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-6 text-center text-sm text-slate-600">
+        Vinyl World
+      </footer>
+    </div>
+    <script>
+    //Background Selection script
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        const bgParam = params.get("bg");
+        const bg =
+          bgParam === "modern" || bgParam === "retro" ? bgParam : "vintage";
+
+        const shelf = document.getElementById("shelfBackground");
+        const vintageRadio = document.getElementById("bgVintage");
+        const modernRadio = document.getElementById("bgModern");
+        const retroRadio = document.getElementById("bgRetro");
+
+        if (!shelf || !vintageRadio || !modernRadio || !retroRadio) return;
+
+        const setBackground = (mode) => {
+          if (mode === "modern") {
+            shelf.style.backgroundImage = "url('imgs/modernBG.png')";
+          } else if (mode === "retro") {
+            shelf.style.backgroundImage = "url('imgs/retroBG.png')";
+          } else {
+            shelf.style.backgroundImage = "url('imgs/vintageBG.png')";
+          }
+        };
+
+        setBackground(bg);
+        vintageRadio.checked = bg === "vintage";
+        modernRadio.checked = bg === "modern";
+        retroRadio.checked = bg === "retro";
+
+        const updateAndReload = (mode) => {
+          params.set("bg", mode);
+          window.location.search = params.toString();
+        };
+
+        vintageRadio.addEventListener("change", () => {
+          if (vintageRadio.checked) updateAndReload("vintage");
+        });
+
+        modernRadio.addEventListener("change", () => {
+          if (modernRadio.checked) updateAndReload("modern");
+        });
+
+        retroRadio.addEventListener("change", () => {
+          if (retroRadio.checked) updateAndReload("retro");
+        });
+      })();
+    </script>
+  </body>
+</html>
