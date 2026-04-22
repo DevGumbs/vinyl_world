@@ -1,11 +1,118 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
+const session = require("express-session");
+const bcrypt = require("bcryptjs");
 const { recordsRouter } = require("./routes/records");
 
 const app = express();
 
-app.use(cors());
+const corsOrigin =
+  process.env.CLIENT_ORIGIN || "http://localhost:5173";
+
+app.use(
+  cors({
+    origin: corsOrigin,
+    credentials: true,
+  })
+);
 app.use(express.json());
+
+app.use(
+  session({
+    name: "vinyl_world_session",
+    secret: process.env.SESSION_SECRET || "dev_secret_change_me",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
+  })
+);
+
+const usersByEmail = new Map();
+
+function safeUser(u) {
+  return {
+    id: u.id,
+    email: u.email,
+    username: u.username,
+    city: u.city,
+    state: u.state,
+  };
+}
+
+app.get("/auth/me", (req, res) => {
+  const user = req.session.user;
+  if (!user) return res.status(401).json({ user: null });
+  return res.json({ user });
+});
+
+app.post("/auth/register", async (req, res) => {
+  const { email, username, password, city, state } = req.body || {};
+
+  const emailStr = typeof email === "string" ? email.trim().toLowerCase() : "";
+  const usernameStr = typeof username === "string" ? username.trim() : "";
+  const passwordStr = typeof password === "string" ? password : "";
+  const cityStr = typeof city === "string" ? city.trim() : "";
+  const stateStr = typeof state === "string" ? state.trim() : "";
+
+  if (!emailStr || !usernameStr || !passwordStr || !cityStr || !stateStr) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  if (usersByEmail.has(emailStr)) {
+    return res.status(409).json({ error: "Email already registered" });
+  }
+
+  const passwordHash = await bcrypt.hash(passwordStr, 10);
+  const user = {
+    id: `usr_${Date.now()}`,
+    email: emailStr,
+    username: usernameStr,
+    city: cityStr,
+    state: stateStr,
+    passwordHash,
+  };
+
+  usersByEmail.set(emailStr, user);
+
+  const safe = safeUser(user);
+  req.session.user = safe;
+  return res.status(201).json({ user: safe });
+});
+
+app.post("/auth/login", async (req, res) => {
+  const { email, password } = req.body || {};
+
+  const emailStr = typeof email === "string" ? email.trim().toLowerCase() : "";
+  const passwordStr = typeof password === "string" ? password : "";
+
+  if (!emailStr || !passwordStr) {
+    return res.status(400).json({ error: "Missing email or password" });
+  }
+
+  const user = usersByEmail.get(emailStr);
+  if (!user) return res.status(401).json({ error: "Invalid credentials" });
+
+  const ok = await bcrypt.compare(passwordStr, user.passwordHash);
+  if (!ok) return res.status(401).json({ error: "Invalid credentials" });
+
+  const safe = safeUser(user);
+  req.session.user = safe;
+  return res.json({ user: safe });
+});
+
+app.post("/auth/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.clearCookie("vinyl_world_session");
+    res.json({ ok: true });
+  });
+});
 
 app.get("/", (req, res) => {
   res.json({
@@ -23,7 +130,6 @@ app.use("/api/records", recordsRouter);
 
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 app.listen(port, () => {
-  // eslint-disable-next-line no-console
   console.log(`Vinyl World API listening on http://localhost:${port}`);
 });
 
