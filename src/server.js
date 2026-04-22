@@ -3,10 +3,22 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
+const SQLiteStoreFactory = require("connect-sqlite3");
 const bcrypt = require("bcryptjs");
+const { db } = require("./data/db");
+const { migrate } = require("./data/migrate");
+const { seedRecordsIfEmpty } = require("./data/seed");
 const { recordsRouter } = require("./routes/records");
 
 const app = express();
+
+try {
+  migrate();
+  seedRecordsIfEmpty();
+} catch (e) {
+  console.error("Failed to initialize database", e);
+  process.exit(1);
+}
 
 const corsOrigin =
   process.env.CLIENT_ORIGIN || "http://localhost:5173";
@@ -19,12 +31,18 @@ app.use(
 );
 app.use(express.json());
 
+const SQLiteStore = SQLiteStoreFactory(session);
+
 app.use(
   session({
     name: "vinyl_world_session",
     secret: process.env.SESSION_SECRET || "dev_secret_change_me",
     resave: false,
     saveUninitialized: false,
+    store: new SQLiteStore({
+      dir: __dirname + "/data",
+      db: "sessions.db",
+    }),
     cookie: {
       httpOnly: true,
       sameSite: "lax",
@@ -33,8 +51,6 @@ app.use(
     },
   })
 );
-
-const usersByEmail = new Map();
 
 function safeUser(u) {
   return {
@@ -65,8 +81,13 @@ app.post("/auth/register", async (req, res) => {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  if (usersByEmail.has(emailStr)) {
-    return res.status(409).json({ error: "Email already registered" });
+  const existing = db
+    .prepare("SELECT id FROM users WHERE email = ? OR username = ? LIMIT 1")
+    .get(emailStr, usernameStr);
+  if (existing) {
+    return res
+      .status(409)
+      .json({ error: "Email or username already registered" });
   }
 
   const passwordHash = await bcrypt.hash(passwordStr, 10);
@@ -79,7 +100,25 @@ app.post("/auth/register", async (req, res) => {
     passwordHash,
   };
 
-  usersByEmail.set(emailStr, user);
+  db.prepare(
+    `
+    INSERT INTO users (
+      id,
+      email,
+      username,
+      password_hash,
+      city,
+      state
+    ) VALUES (?, ?, ?, ?, ?, ?)
+  `
+  ).run(
+    user.id,
+    user.email,
+    user.username,
+    user.passwordHash,
+    user.city,
+    user.state
+  );
 
   const safe = safeUser(user);
   req.session.user = safe;
@@ -96,7 +135,23 @@ app.post("/auth/login", async (req, res) => {
     return res.status(400).json({ error: "Missing email or password" });
   }
 
-  const user = usersByEmail.get(emailStr);
+  const user = db
+    .prepare(
+      `
+      SELECT
+        id,
+        email,
+        username,
+        password_hash AS passwordHash,
+        city,
+        state
+      FROM users
+      WHERE email = ?
+      LIMIT 1
+    `
+    )
+    .get(emailStr);
+
   if (!user) return res.status(401).json({ error: "Invalid credentials" });
 
   const ok = await bcrypt.compare(passwordStr, user.passwordHash);
