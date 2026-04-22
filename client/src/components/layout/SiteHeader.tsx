@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { useAuth } from '../../auth/AuthProvider'
 
 const navInactive =
   'text-slate-700 transition hover:text-emerald-600 hover:underline'
@@ -9,6 +10,8 @@ function navClass({ isActive }: { isActive: boolean }) {
 }
 
 export function SiteHeader() {
+  const { user, loading, logout } = useAuth()
+
   return (
     <header className="mb-6 flex w-full items-stretch gap-6">
       <div className="flex w-[220px] items-center justify-start">
@@ -52,15 +55,38 @@ export function SiteHeader() {
             <span className="block">Trade</span>
             <span className="-mt-1 block">Center</span>
           </NavLink>
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) =>
-              `text-right text-xs leading-snug text-slate-700 hover:text-emerald-600 hover:underline ${isActive ? 'text-emerald-600 underline' : ''}`
-            }
-          >
-            <span className="block">CurrentUser&apos;s</span>
-            <span className="block font-semibold underline">Username</span>
-          </NavLink>
+          {!loading && !user ? (
+            <NavLink
+              to="/sign-in"
+              className="rounded-full border border-emerald-500 bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-600"
+            >
+              Sign in
+            </NavLink>
+          ) : null}
+
+          {!loading && user ? (
+            <div className="flex items-center">
+              <div className="text-right leading-tight">
+                <NavLink
+                  to="/dashboard"
+                  className={({ isActive }) =>
+                    `block text-slate-800 hover:text-emerald-600 hover:underline ${isActive ? 'text-emerald-600 underline' : ''}`
+                  }
+                >
+                  <span className="block text-sm font-semibold">
+                    {user.username}
+                  </span>
+                </NavLink>
+                <button
+                  type="button"
+                  onClick={() => void logout()}
+                  className="mt-1 text-[11px] text-slate-400 hover:text-emerald-600 hover:underline"
+                >
+                  Sign out
+                </button>
+              </div>
+            </div>
+          ) : null}
         </nav>
       </div>
     </header>
