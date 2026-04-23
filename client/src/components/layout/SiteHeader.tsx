@@ -68,7 +68,7 @@ export function SiteHeader() {
             <div className="flex items-center">
               <div className="text-right leading-tight">
                 <NavLink
-                  to="/dashboard"
+                  to={`/u/${encodeURIComponent(user.username)}`}
                   className={({ isActive }) =>
                     `block text-slate-800 hover:text-emerald-600 hover:underline ${isActive ? 'text-emerald-600 underline' : ''}`
                   }

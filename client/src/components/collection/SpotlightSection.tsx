@@ -1,4 +1,10 @@
-export function SpotlightSection() {
+import type { RecordRow } from '../../records/recordTypes'
+
+type SpotlightSectionProps = {
+  record: RecordRow
+}
+
+export function SpotlightSection({ record }: SpotlightSectionProps) {
   return (
     <section className="grid gap-6 rounded-2xl border border-slate-200 bg-white px-6 py-6 shadow-sm md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
       <div className="flex items-center justify-center">
@@ -15,9 +21,11 @@ export function SpotlightSection() {
       </div>
 
       <div className="flex flex-col justify-center text-left md:text-left">
-        <h2 className="text-2xl font-semibold tracking-wide">Album Name</h2>
-        <p className="mt-3 text-sm font-semibold">Artist Name</p>
-        <p className="mt-2 text-sm text-slate-300">Year | Genre</p>
+        <h2 className="text-2xl font-semibold tracking-wide">{record.albumTitle}</h2>
+        <p className="mt-3 text-sm font-semibold">{record.artistName}</p>
+        <p className="mt-2 text-sm text-slate-300">
+          {record.year} | {record.genre} | {record.vinylCondition}
+        </p>
 
         <p className="mt-6 text-xs text-slate-400">
           Click a record in the gallery row to spotlight it here and see more details about the

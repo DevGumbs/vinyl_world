@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+const fs = require("fs");
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
@@ -7,13 +9,20 @@ const SQLiteStoreFactory = require("connect-sqlite3");
 const bcrypt = require("bcryptjs");
 const { db } = require("./data/db");
 const { migrate } = require("./data/migrate");
-const { seedRecordsIfEmpty } = require("./data/seed");
+const { seedRecordsIfEmpty, ensureTopics } = require("./data/seed");
 const { recordsRouter } = require("./routes/records");
+const { topicsRouter } = require("./routes/topics");
+const { postsRouter } = require("./routes/posts");
+const { discoverRouter } = require("./routes/discover");
 
 const app = express();
 
+const uploadsDir = path.resolve(process.cwd(), "uploads");
+fs.mkdirSync(uploadsDir, { recursive: true });
+
 try {
   migrate();
+  ensureTopics();
   seedRecordsIfEmpty();
 } catch (e) {
   console.error("Failed to initialize database", e);
@@ -30,6 +39,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use("/uploads", express.static(uploadsDir));
 
 const SQLiteStore = SQLiteStoreFactory(session);
 
@@ -182,6 +192,9 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/api/records", recordsRouter);
+app.use("/api/topics", topicsRouter);
+app.use("/api/posts", postsRouter);
+app.use("/api/discover", discoverRouter);
 
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 app.listen(port, () => {
