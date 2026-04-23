@@ -1,13 +1,113 @@
+import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../../auth/AuthProvider'
 import { CollectionPageHeader } from '../../components/collection/CollectionPageHeader'
 import { GalleryStrip } from '../../components/collection/GalleryStrip'
 import { SpotlightSection } from '../../components/collection/SpotlightSection'
+import { api } from '../../lib/api'
+import type { RecordRow } from '../../records/recordTypes'
 
 export default function CollectionPage() {
+  const { user, loading: authLoading } = useAuth()
+  const [records, setRecords] = useState<RecordRow[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (authLoading) return
+    if (!user) {
+      setRecords([])
+      setSelectedId(null)
+      setLoading(false)
+      return
+    }
+
+    let cancelled = false
+    setLoading(true)
+    setError(null)
+    api<RecordRow[]>(`/api/records/user/${encodeURIComponent(user.username)}`)
+      .then((rows) => {
+        if (cancelled) return
+        setRecords(rows)
+        setSelectedId(rows[0]?.id ?? null)
+      })
+      .catch((e) => {
+        if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load records')
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [user, authLoading])
+
+  const selected = useMemo(
+    () => records.find((r) => r.id === selectedId) ?? null,
+    [records, selectedId]
+  )
+
+  if (authLoading) {
+    return (
+      <main className="flex-1 space-y-6">
+        <CollectionPageHeader count={0} />
+        <p className="text-center text-sm text-slate-500">Loading…</p>
+      </main>
+    )
+  }
+
+  if (!user) {
+    return (
+      <main className="flex-1 space-y-6">
+        <CollectionPageHeader count={0} />
+        <section className="rounded-2xl border border-slate-200 bg-white px-6 py-6 text-center shadow-sm">
+          <p className="text-sm text-slate-600">
+            <Link to="/sign-in" className="font-semibold text-emerald-600 underline">
+              Sign in
+            </Link>{' '}
+            or{' '}
+            <Link to="/sign-up" className="font-semibold text-emerald-600 underline">
+              sign up
+            </Link>{' '}
+            to view and manage your collection.
+          </p>
+        </section>
+      </main>
+    )
+  }
+
   return (
     <main className="flex-1 space-y-6">
-      <CollectionPageHeader />
-      <GalleryStrip />
-      <SpotlightSection />
+      <CollectionPageHeader count={records.length} />
+
+      {error ? (
+        <section className="rounded-2xl border border-slate-200 bg-white px-6 py-6 text-center shadow-sm">
+          <p className="text-sm text-rose-600">{error}</p>
+        </section>
+      ) : loading ? (
+        <section className="rounded-2xl border border-slate-200 bg-white px-6 py-6 text-center shadow-sm">
+          <p className="text-sm text-slate-500">Loading records…</p>
+        </section>
+      ) : records.length === 0 ? (
+        <section className="rounded-2xl border border-slate-200 bg-white px-6 py-6 text-center shadow-sm">
+          <p className="text-sm text-slate-600">
+            <Link to="/collection" className="font-semibold text-emerald-600 underline">
+              Add a record to your collection
+            </Link>
+          </p>
+        </section>
+      ) : (
+        <>
+          <GalleryStrip
+            records={records}
+            selectedId={selectedId}
+            onSelect={(id) => setSelectedId(id)}
+          />
+          {selected ? <SpotlightSection record={selected} /> : null}
+        </>
+      )}
     </main>
   )
 }

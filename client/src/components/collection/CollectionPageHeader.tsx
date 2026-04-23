@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom'
 
-export function CollectionPageHeader() {
+type CollectionPageHeaderProps = {
+  count: number
+}
+
+export function CollectionPageHeader({ count }: CollectionPageHeaderProps) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
       <div className="flex flex-col items-start gap-3 text-sm md:flex-row md:items-center md:justify-between">
@@ -25,7 +29,9 @@ export function CollectionPageHeader() {
             <span>/</span>
             <span className="font-semibold text-emerald-600 underline">Gallery</span>
           </div>
-          <p className="text-xs text-slate-400 md:ml-4">68 vinyls</p>
+          <p className="text-xs text-slate-400 md:ml-4">
+            {count} vinyl{count === 1 ? '' : 's'}
+          </p>
         </div>
       </div>
     </section>

@@ -1,6 +1,11 @@
 import { TradeListingCard } from './TradeListingCard'
+import type { RecordRow } from '../../records/recordTypes'
 
-export function TradeListingsPanel() {
+type TradeListingsPanelProps = {
+  records: RecordRow[]
+}
+
+export function TradeListingsPanel({ records }: TradeListingsPanelProps) {
   return (
     <section className="flex flex-col rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
       <div className="mb-3 flex flex-col gap-3 border-b border-slate-800 pb-3 text-sm md:flex-row md:items-center md:justify-between">
@@ -21,9 +26,13 @@ export function TradeListingsPanel() {
       </div>
 
       <div className="flex-1 space-y-3 overflow-y-auto pr-1 text-xs">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <TradeListingCard key={i} />
-        ))}
+        {records.length === 0 ? (
+          <p className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs text-slate-500">
+            No listings yet.
+          </p>
+        ) : (
+          records.map((r) => <TradeListingCard key={r.id} record={r} />)
+        )}
       </div>
     </section>
   )

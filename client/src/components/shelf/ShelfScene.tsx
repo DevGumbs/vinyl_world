@@ -1,10 +1,12 @@
 import { ShelfAlbumSlot } from './ShelfAlbumSlot'
+import type { RecordRow } from '../../records/recordTypes'
 
 type ShelfSceneProps = {
   backgroundImage: string
+  records: RecordRow[]
 }
 
-export function ShelfScene({ backgroundImage }: ShelfSceneProps) {
+export function ShelfScene({ backgroundImage, records }: ShelfSceneProps) {
   return (
     <section className="flex">
       <div
@@ -14,15 +16,21 @@ export function ShelfScene({ backgroundImage }: ShelfSceneProps) {
         <div className="absolute inset-0 rounded-3xl bg-slate-950/35" />
 
         <div className="relative flex h-full flex-col justify-center gap-8 px-8 py-8">
-          {Array.from({ length: 3 }).map((_, row) => (
-            <div key={row} className="space-y-3">
-              <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-                {Array.from({ length: 4 }).map((__, col) => (
-                  <ShelfAlbumSlot key={`${row}-${col}`} />
-                ))}
-              </div>
+          {records.length === 0 ? null : (
+            <div className="space-y-8">
+              {Array.from({ length: Math.ceil(Math.min(records.length, 12) / 4) }).map(
+                (_, row) => (
+                  <div key={row} className="space-y-3">
+                    <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+                      {records.slice(row * 4, row * 4 + 4).map((r) => (
+                        <ShelfAlbumSlot key={r.id} record={r} />
+                      ))}
+                    </div>
+                  </div>
+                )
+              )}
             </div>
-          ))}
+          )}
         </div>
       </div>
     </section>
