@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { DiscussionBoard } from '../../components/lobby/DiscussionBoard'
 import { DiscoverEngage } from '../../components/lobby/DiscoverEngage'
 import { MyCollectionPreview } from '../../components/lobby/MyCollectionPreview'
@@ -6,12 +7,19 @@ import { TrendingTopics } from '../../components/lobby/TrendingTopics'
 import { YourActivity } from '../../components/lobby/YourActivity'
 
 export default function LobbyPage() {
+  const [postsRefreshToken, setPostsRefreshToken] = useState(0)
+  const [selectedTopicName, setSelectedTopicName] = useState<string | null>(null)
+
   return (
     <main className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-[220px_minmax(0,1fr)_260px]">
-      <TopicSidebar />
+      <TopicSidebar
+        onPostCreated={() => setPostsRefreshToken((v) => v + 1)}
+        selectedTopicName={selectedTopicName}
+        onSelectTopicName={setSelectedTopicName}
+      />
 
       <section className="flex flex-col gap-4">
-        <DiscussionBoard />
+        <DiscussionBoard refreshToken={postsRefreshToken} topicNameFilter={selectedTopicName} />
         <DiscoverEngage />
       </section>
 

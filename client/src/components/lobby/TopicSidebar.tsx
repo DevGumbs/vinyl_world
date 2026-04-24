@@ -16,17 +16,19 @@ function TopicRow({
   count,
   onClick,
   labelRight,
+  active,
 }: {
   label: string
   count: number
   onClick?: () => void
   labelRight?: React.ReactNode
+  active?: boolean
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center justify-between text-left text-slate-700 transition hover:text-emerald-600 hover:underline"
+      className={`flex w-full items-center justify-between text-left transition hover:text-emerald-600 hover:underline ${active ? 'font-semibold text-emerald-600 underline' : 'text-slate-700'}`}
     >
       <span className="inline-flex min-w-0 items-center gap-1 truncate">
         <span className="truncate">{label}</span>
@@ -39,7 +41,15 @@ function TopicRow({
   )
 }
 
-export function TopicSidebar() {
+export function TopicSidebar({
+  onPostCreated,
+  selectedTopicName,
+  onSelectTopicName,
+}: {
+  onPostCreated?: () => void
+  selectedTopicName: string | null
+  onSelectTopicName: (name: string | null) => void
+}) {
   const { user, loading } = useAuth()
   const [newPostOpen, setNewPostOpen] = useState(false)
   const [expandedGenres, setExpandedGenres] = useState(false)
@@ -79,9 +89,22 @@ export function TopicSidebar() {
         <p className="text-center text-xs text-slate-400">Loading…</p>
       ) : (
         <ul className="space-y-2">
+          <li>
+            <TopicRow
+              label="All"
+              count={topics.reduce((sum, t) => sum + (t.count ?? 0), 0)}
+              onClick={() => onSelectTopicName(null)}
+              active={selectedTopicName === null}
+            />
+          </li>
           {nonGenreTopics.map((t) => (
             <li key={t.id}>
-              <TopicRow label={t.name} count={t.count} />
+              <TopicRow
+                label={t.name}
+                count={t.count}
+                onClick={() => onSelectTopicName(t.name)}
+                active={selectedTopicName === t.name}
+              />
             </li>
           ))}
 
@@ -92,12 +115,18 @@ export function TopicSidebar() {
                 count={genreNode.count}
                 onClick={() => setExpandedGenres((v) => !v)}
                 labelRight={expandedGenres ? '△' : '▽'}
+                active={selectedTopicName === genreNode.name}
               />
               {expandedGenres ? (
                 <ul className="mt-2 space-y-2 pl-4">
                   {genreNode.children.map((c) => (
                     <li key={c.id}>
-                      <TopicRow label={c.name} count={c.count} />
+                      <TopicRow
+                        label={c.name}
+                        count={c.count}
+                        onClick={() => onSelectTopicName(c.name)}
+                        active={selectedTopicName === c.name}
+                      />
                     </li>
                   ))}
                 </ul>
@@ -120,7 +149,10 @@ export function TopicSidebar() {
             <NewPostModal
               open={newPostOpen}
               onClose={() => setNewPostOpen(false)}
-              onCreated={() => void loadTopics()}
+              onCreated={() => {
+                void loadTopics()
+                onPostCreated?.()
+              }}
             />
           </>
         ) : null}

@@ -19,14 +19,20 @@ export function DiscussionPost({
   commentCount,
   onOpen,
 }: DiscussionPostProps) {
+  const initials = userLabel
+    .trim()
+    .slice(0, 2)
+    .toUpperCase()
+
   return (
     <article className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
       <Link
         to={`/u/${encodeURIComponent(userLabel)}`}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-emerald-500/80 bg-slate-900 text-xs text-emerald-600 hover:border-emerald-500 hover:text-emerald-500"
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-900 shadow-sm hover:border-emerald-500 hover:text-emerald-700"
         aria-label={`View ${userLabel} profile`}
+        title={userLabel}
       >
-        {userLabel}
+        {initials}
       </Link>
       <div className="flex-1">
         <button

@@ -12,6 +12,11 @@ type PostRow = {
   commentCount: number
 }
 
+type DiscussionBoardProps = {
+  refreshToken?: number
+  topicNameFilter?: string | null
+}
+
 function timeAgoLabel(iso: string) {
   const date = new Date(iso)
   const diffMs = Date.now() - date.getTime()
@@ -26,11 +31,17 @@ function timeAgoLabel(iso: string) {
   return `${days}d ago`
 }
 
-export function DiscussionBoard() {
+export function DiscussionBoard({ refreshToken = 0, topicNameFilter = null }: DiscussionBoardProps) {
   const [posts, setPosts] = useState<PostRow[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [openPostId, setOpenPostId] = useState<string | null>(null)
+  const [nowTick, setNowTick] = useState(0)
+
+  useEffect(() => {
+    const id = window.setInterval(() => setNowTick((v) => v + 1), 60_000)
+    return () => window.clearInterval(id)
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -49,17 +60,22 @@ export function DiscussionBoard() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [refreshToken])
+
+  const filteredPosts = useMemo(() => {
+    if (!topicNameFilter) return posts
+    return posts.filter((p) => p.topicName === topicNameFilter)
+  }, [posts, topicNameFilter])
 
   const content = useMemo(() => {
     if (loading) return <p className="text-center text-xs text-slate-400">Loading…</p>
     if (error) return <p className="text-center text-xs text-rose-600">{error}</p>
-    if (posts.length === 0) {
+    if (filteredPosts.length === 0) {
       return <p className="text-center text-sm text-slate-500">No current posts.</p>
     }
     return (
       <div className="space-y-3 text-sm">
-        {posts.map((p) => (
+        {filteredPosts.map((p) => (
           <DiscussionPost
             key={p.id}
             postId={p.id}
@@ -78,7 +94,7 @@ export function DiscussionBoard() {
         />
       </div>
     )
-  }, [posts, loading, error])
+  }, [filteredPosts, loading, error, openPostId, nowTick])
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
