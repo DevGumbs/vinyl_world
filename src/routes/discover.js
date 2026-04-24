@@ -59,37 +59,52 @@ router.get("/", (req, res) => {
       .all();
   } else {
     mode = "private";
-    block3 = db
+    const rows = db
       .prepare(
         `
-        WITH my_artists AS (
-          SELECT DISTINCT LOWER(TRIM(artist_name)) AS artistKey
+        WITH my_albums AS (
+          SELECT DISTINCT
+            LOWER(TRIM(album_title)) AS albumKey,
+            LOWER(TRIM(artist_name)) AS artistKey
           FROM records
           WHERE owner_username = ?
+            AND TRIM(COALESCE(album_title, '')) <> ''
             AND TRIM(COALESCE(artist_name, '')) <> ''
         ),
         others AS (
           SELECT
             r.owner_username AS otherUsername,
+            r.album_title AS albumTitle,
             r.artist_name AS artistName,
+            LOWER(TRIM(r.album_title)) AS albumKey,
             LOWER(TRIM(r.artist_name)) AS artistKey
           FROM records r
-          JOIN my_artists m ON m.artistKey = LOWER(TRIM(r.artist_name))
+          JOIN my_albums m
+            ON m.albumKey = LOWER(TRIM(r.album_title))
+           AND m.artistKey = LOWER(TRIM(r.artist_name))
           WHERE r.owner_username <> ?
+            AND TRIM(COALESCE(r.album_title, '')) <> ''
             AND TRIM(COALESCE(r.artist_name, '')) <> ''
         )
         SELECT
-          'artist' AS subjectType,
-          MAX(artistName) AS subjectName,
+          'album' AS subjectType,
+          MAX(albumTitle) || ' — ' || MAX(artistName) AS subjectName,
           otherUsername,
           COUNT(*) AS sharedCount
         FROM others
-        GROUP BY otherUsername, artistKey
+        GROUP BY otherUsername, albumKey, artistKey
         ORDER BY sharedCount DESC, subjectName ASC
         LIMIT 3
       `
       )
       .all(username, username);
+
+    block3 = rows.map((r) => ({
+      subjectType: "album",
+      subjectName: String(r.subjectName ?? ""),
+      otherUsername: String(r.otherUsername ?? r.otherusername ?? ""),
+      sharedCount: Number(r.sharedCount ?? 0),
+    }));
   }
 
   res.json({ mode, block1, block2, block3 });

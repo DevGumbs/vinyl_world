@@ -4,9 +4,10 @@ import { coverSrc } from '../../records/cover'
 
 type TradeListingCardProps = {
   record: RecordRow
+  onViewDiscussion: (record: RecordRow) => void
 }
 
-export function TradeListingCard({ record }: TradeListingCardProps) {
+export function TradeListingCard({ record, onViewDiscussion }: TradeListingCardProps) {
   const src = coverSrc(record.coverImg)
   return (
     <article className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
@@ -29,12 +30,17 @@ export function TradeListingCard({ record }: TradeListingCardProps) {
           </Link>
         </p>
         <p className="text-[11px] text-slate-500">
-          {record.vinylCondition} | <span className="text-slate-800">0 comments</span>
+          {record.vinylCondition} |{' '}
+          <span className="text-slate-800">
+            {record.tradeCommentCount ?? 0}{' '}
+            {(record.tradeCommentCount ?? 0) === 1 ? 'comment' : 'comments'}
+          </span>
         </p>
       </div>
       <div className="flex flex-col items-end justify-between gap-2">
         <button
           type="button"
+          onClick={() => onViewDiscussion(record)}
           className="rounded-full border border-emerald-500 bg-emerald-500 px-3 py-1 text-[11px] text-white hover:bg-emerald-600"
         >
           View Discussion

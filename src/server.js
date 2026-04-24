@@ -14,6 +14,7 @@ const { recordsRouter } = require("./routes/records");
 const { topicsRouter } = require("./routes/topics");
 const { postsRouter } = require("./routes/posts");
 const { discoverRouter } = require("./routes/discover");
+const { activityRouter } = require("./routes/activity");
 
 const app = express();
 
@@ -194,6 +195,7 @@ app.use("/api/records", recordsRouter);
 app.use("/api/topics", topicsRouter);
 app.use("/api/posts", postsRouter);
 app.use("/api/discover", discoverRouter);
+app.use("/api/activity", activityRouter);
 
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 app.listen(port, () => {

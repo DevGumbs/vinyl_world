@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { emitActivityRefresh } from '../../lib/activityRefresh'
 import { DiscussionBoard } from '../../components/lobby/DiscussionBoard'
 import { DiscoverEngage } from '../../components/lobby/DiscoverEngage'
 import { MyCollectionPreview } from '../../components/lobby/MyCollectionPreview'
@@ -13,7 +14,10 @@ export default function LobbyPage() {
   return (
     <main className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-[220px_minmax(0,1fr)_260px]">
       <TopicSidebar
-        onPostCreated={() => setPostsRefreshToken((v) => v + 1)}
+        onPostCreated={() => {
+          setPostsRefreshToken((v) => v + 1)
+          emitActivityRefresh()
+        }}
         selectedTopicName={selectedTopicName}
         onSelectTopicName={setSelectedTopicName}
       />

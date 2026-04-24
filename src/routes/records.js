@@ -70,18 +70,21 @@ router.get("/trades", (req, res) => {
     .prepare(
       `
       SELECT
-        id,
-        album_title AS albumTitle,
-        artist_name AS artistName,
-        year,
-        genre,
-        cover_image_url AS coverImg,
-        vinyl_condition AS vinylCondition,
-        is_for_trade AS isForTrade,
-        owner_username AS ownerUsername
-      FROM records
-      WHERE is_for_trade = 1
-      ORDER BY id
+        r.id,
+        r.album_title AS albumTitle,
+        r.artist_name AS artistName,
+        r.year,
+        r.genre,
+        r.cover_image_url AS coverImg,
+        r.vinyl_condition AS vinylCondition,
+        r.is_for_trade AS isForTrade,
+        r.owner_username AS ownerUsername,
+        (
+          SELECT COUNT(*) FROM trade_listing_comments c WHERE c.record_id = r.id
+        ) AS tradeCommentCount
+      FROM records r
+      WHERE r.is_for_trade = 1
+      ORDER BY r.id
     `
     )
     .all();
@@ -90,6 +93,7 @@ router.get("/trades", (req, res) => {
     rows.map((r) => ({
       ...r,
       isForTrade: Boolean(r.isForTrade),
+      tradeCommentCount: Number(r.tradeCommentCount ?? 0),
     }))
   );
 });
@@ -121,7 +125,7 @@ router.post("/trades/list", (req, res) => {
   const update = db.prepare(
     `
     UPDATE records
-    SET is_for_trade = 1, vinyl_condition = ?
+    SET is_for_trade = 1, vinyl_condition = ?, listed_for_trade_at = datetime('now')
     WHERE id = ? AND owner_username = ?
   `
   );
@@ -137,6 +141,116 @@ router.post("/trades/list", (req, res) => {
 
   const updated = tx(normalized);
   return res.json({ ok: true, updated });
+});
+
+router.post("/trades/unlist", (req, res) => {
+  if (!req.session || !req.session.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const username = String(req.session.user.username);
+  const ids = Array.isArray(req.body?.recordIds) ? req.body.recordIds : [];
+  const recordIds = ids
+    .map((id) => (typeof id === "string" ? id.trim() : ""))
+    .filter(Boolean);
+
+  if (recordIds.length === 0) {
+    return res.status(400).json({ error: "No record ids" });
+  }
+
+  const placeholders = recordIds.map(() => "?").join(", ");
+  const info = db
+    .prepare(
+      `
+      UPDATE records
+      SET is_for_trade = 0, listed_for_trade_at = NULL
+      WHERE owner_username = ? AND id IN (${placeholders})
+    `
+    )
+    .run(username, ...recordIds);
+
+  return res.json({ ok: true, updated: info.changes || 0 });
+});
+
+router.get("/trades/:recordId/comments", (req, res) => {
+  const recordId = String(req.params.recordId);
+  const listing = db
+    .prepare(
+      `SELECT id FROM records WHERE id = ? AND is_for_trade = 1 LIMIT 1`
+    )
+    .get(recordId);
+  if (!listing) {
+    return res.status(404).json({ error: "Listing not found" });
+  }
+
+  const rows = db
+    .prepare(
+      `
+      SELECT
+        id,
+        record_id AS recordId,
+        author_username AS authorUsername,
+        body,
+        created_at AS createdAt
+      FROM trade_listing_comments
+      WHERE record_id = ?
+      ORDER BY datetime(created_at) ASC, id ASC
+    `
+    )
+    .all(recordId);
+
+  res.json({ comments: rows });
+});
+
+router.post("/trades/:recordId/comments", (req, res) => {
+  if (!req.session || !req.session.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const recordId = String(req.params.recordId);
+  const listing = db
+    .prepare(
+      `SELECT id FROM records WHERE id = ? AND is_for_trade = 1 LIMIT 1`
+    )
+    .get(recordId);
+  if (!listing) {
+    return res.status(404).json({ error: "Listing not found" });
+  }
+
+  const bodyRaw = typeof req.body?.body === "string" ? req.body.body.trim() : "";
+  if (!bodyRaw) {
+    return res.status(400).json({ error: "Comment cannot be empty" });
+  }
+  if (bodyRaw.length > 4000) {
+    return res.status(400).json({ error: "Comment is too long" });
+  }
+
+  const authorUsername = String(req.session.user.username);
+  const id = `tlc_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+
+  db.prepare(
+    `
+    INSERT INTO trade_listing_comments (id, record_id, author_username, body)
+    VALUES (?, ?, ?, ?)
+  `
+  ).run(id, recordId, authorUsername, bodyRaw);
+
+  const row = db
+    .prepare(
+      `
+      SELECT
+        id,
+        record_id AS recordId,
+        author_username AS authorUsername,
+        body,
+        created_at AS createdAt
+      FROM trade_listing_comments
+      WHERE id = ?
+    `
+    )
+    .get(id);
+
+  return res.status(201).json({ comment: row });
 });
 
 router.post("/", upload.single("cover"), (req, res) => {

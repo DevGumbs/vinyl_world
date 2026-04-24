@@ -3,9 +3,10 @@ import type { RecordRow } from '../../records/recordTypes'
 
 type TradeListingsPanelProps = {
   records: RecordRow[]
+  onOpenDiscussion: (record: RecordRow) => void
 }
 
-export function TradeListingsPanel({ records }: TradeListingsPanelProps) {
+export function TradeListingsPanel({ records, onOpenDiscussion }: TradeListingsPanelProps) {
   return (
     <section className="flex flex-col rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
       <div className="mb-3 flex flex-col gap-3 border-b border-slate-800 pb-3 text-sm md:flex-row md:items-center md:justify-between">
@@ -31,7 +32,9 @@ export function TradeListingsPanel({ records }: TradeListingsPanelProps) {
             No listings yet.
           </p>
         ) : (
-          records.map((r) => <TradeListingCard key={r.id} record={r} />)
+          records.map((r) => (
+            <TradeListingCard key={r.id} record={r} onViewDiscussion={onOpenDiscussion} />
+          ))
         )}
       </div>
     </section>

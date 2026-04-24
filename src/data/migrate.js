@@ -52,6 +52,15 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE
   );
+
+  CREATE TABLE IF NOT EXISTS trade_listing_comments (
+    id TEXT PRIMARY KEY,
+    record_id TEXT NOT NULL,
+    author_username TEXT NOT NULL,
+    body TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY(record_id) REFERENCES records(id) ON DELETE CASCADE
+  );
 `);
 
 try {
@@ -69,6 +78,10 @@ try {
 
 try {
   db.exec(`UPDATE records SET created_at = datetime('now') WHERE created_at IS NULL`);
+} catch {}
+
+try {
+  db.exec(`ALTER TABLE records ADD COLUMN listed_for_trade_at TEXT`);
 } catch {}
 
 // One-time cleanup: remove legacy seeded sample records (rec_001..rec_010).
