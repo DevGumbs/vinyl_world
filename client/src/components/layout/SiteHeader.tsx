@@ -22,24 +22,26 @@ export function SiteHeader() {
         />
       </div>
 
-      <div className="flex flex-1 flex-wrap items-center justify-between rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm shadow-slate-200">
-        <div className="flex flex-1 justify-start">
-          <div className="flex w-full max-w-xl items-center gap-2">
-            <input
-              type="search"
-              placeholder="Search records, posts, or users"
-              className="h-10 w-full rounded-full border border-slate-300 bg-white px-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-            />
-            <button
-              type="button"
-              className="h-10 shrink-0 rounded-full border border-emerald-500 bg-emerald-500 px-6 text-sm font-semibold text-white transition hover:bg-emerald-600"
-            >
-              Search
-            </button>
+      <div className="flex flex-1 flex-wrap items-center justify-between gap-6 rounded-2xl border border-slate-200 border-t-emerald-100 bg-white bg-gradient-to-br from-white via-white to-emerald-50/40 px-6 py-4 shadow-sm shadow-slate-200/80 ring-1 ring-emerald-900/[0.04]">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
+          <div
+            className="h-9 w-1 shrink-0 self-center rounded-full bg-gradient-to-b from-emerald-400 via-emerald-500 to-teal-600 shadow-[0_0_14px_rgba(16,185,129,0.35)] sm:h-10"
+            aria-hidden
+          />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium italic leading-snug tracking-wide text-transparent sm:text-base sm:leading-relaxed">
+              <span className="bg-gradient-to-r from-emerald-800 to-teal-600 bg-clip-text drop-shadow-sm">
+                {'\u201C'}
+                Music on vinyl is meant to be experienced, not just heard.
+                {'\u201D'}
+              </span>
+            </p>
+            <p className="mt-1 text-[10px] font-normal not-italic tracking-normal text-slate-500 sm:text-xs">
+              {'\u2014'} Anonymous
+            </p>
           </div>
         </div>
-
-        <nav className="ml-6 flex items-center gap-8 text-sm">
+        <nav className="flex shrink-0 flex-wrap items-center gap-6 text-sm sm:gap-8">
           <NavLink to="/" className={navClass} end>
             Home
           </NavLink>

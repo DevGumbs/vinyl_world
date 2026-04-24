@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { emitActivityRefresh } from '../../lib/activityRefresh'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthProvider'
 import { CollectionPageHeader } from '../../components/collection/CollectionPageHeader'
@@ -111,7 +112,12 @@ export default function CollectionPage() {
       <AddRecordModal
         open={addOpen}
         onClose={() => setAddOpen(false)}
-        onCreated={() => void refresh()}
+        onCreated={() =>
+          void (async () => {
+            await refresh()
+            emitActivityRefresh()
+          })()
+        }
       />
       <EditRecordModal
         open={editOpen}

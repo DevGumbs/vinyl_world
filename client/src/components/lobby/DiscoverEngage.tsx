@@ -35,6 +35,14 @@ function subjectLabel(subjectType: 'artist' | 'album') {
   return subjectType === 'artist' ? 'Artist' : 'Album'
 }
 
+function privateBlock3OtherUsername(x: {
+  otherUsername?: string
+  otherusername?: string
+}): string {
+  const v = x.otherUsername ?? x.otherusername
+  return typeof v === 'string' && v.trim() ? v.trim() : ''
+}
+
 export function DiscoverEngage() {
   const { user, loading: authLoading } = useAuth()
   const [data, setData] = useState<DiscoverResponse | null>(null)
@@ -140,27 +148,48 @@ export function DiscoverEngage() {
                         </div>
                       )
                     )
-                  : (data.block3 as { subjectType: 'artist' | 'album'; subjectName: string; otherUsername: string; sharedCount: number }[]).map(
-                      (x, i) => (
-                        <div key={`${x.subjectType}-${x.subjectName}-${x.otherUsername}-${i}`}>
+                  : (
+                      data.block3 as {
+                        subjectType: 'artist' | 'album'
+                        subjectName: string
+                        otherUsername?: string
+                        otherusername?: string
+                        sharedCount: number
+                      }[]
+                    ).map((x, i) => {
+                      const otherUser = privateBlock3OtherUsername(x)
+                      return (
+                        <div key={`${x.subjectType}-${x.subjectName}-${otherUser}-${i}`}>
                           <p className="font-semibold text-slate-900">
                             {subjectLabel(x.subjectType)}: {x.subjectName}
                           </p>
-                          <p className="text-slate-600">
-                            you and {x.otherUsername} share this {x.sharedCount} time
-                            {x.sharedCount === 1 ? '' : 's'}
-                          </p>
-                          <p className="mt-1">
-                            <Link
-                              to={`/collection/${encodeURIComponent(x.otherUsername)}`}
-                              className="font-semibold text-emerald-600 underline"
-                            >
-                              Collection
-                            </Link>
-                          </p>
+                          {otherUser ? (
+                            <>
+                              <p className="text-slate-600">
+                                You share this album with{' '}
+                                <Link
+                                  to={`/u/${encodeURIComponent(otherUser)}`}
+                                  className="font-semibold text-slate-800 underline underline-offset-2 hover:text-emerald-600"
+                                >
+                                  {otherUser}
+                                </Link>
+                                {x.sharedCount > 1 ? ` · ${x.sharedCount} matching copies` : ''}.
+                              </p>
+                              <p className="mt-1">
+                                <Link
+                                  to={`/collection/${encodeURIComponent(otherUser)}`}
+                                  className="font-semibold text-emerald-600 underline"
+                                >
+                                  {`${otherUser}'s collection`}
+                                </Link>
+                              </p>
+                            </>
+                          ) : (
+                            <p className="text-slate-600">Another member has this album too.</p>
+                          )}
                         </div>
                       )
-                    )}
+                    })}
               </div>
             )}
           </div>

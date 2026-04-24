@@ -2,6 +2,7 @@ import { useEffect, useId, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthProvider'
 import { api, API_BASE_URL } from '../../lib/api'
+import { emitActivityRefresh } from '../../lib/activityRefresh'
 
 type PostDetail = {
   id: string
@@ -52,7 +53,7 @@ export function PostDetailModal({ open, postId, onClose }: PostDetailModalProps)
   const [commentBody, setCommentBody] = useState('')
   const [commentSubmitting, setCommentSubmitting] = useState(false)
   const [commentError, setCommentError] = useState<string | null>(null)
-  const [commentsOpen, setCommentsOpen] = useState(true)
+  const [commentsOpen, setCommentsOpen] = useState(false)
 
   useEffect(() => {
     if (!open) {
@@ -63,7 +64,7 @@ export function PostDetailModal({ open, postId, onClose }: PostDetailModalProps)
       setCommentBody('')
       setCommentSubmitting(false)
       setCommentError(null)
-      setCommentsOpen(true)
+      setCommentsOpen(false)
     }
   }, [open])
 
@@ -80,7 +81,6 @@ export function PostDetailModal({ open, postId, onClose }: PostDetailModalProps)
         if (cancelled) return
         setPost(p)
         setComments(c)
-        setCommentsOpen(c.length <= 1)
       })
       .catch((e) => {
         if (cancelled) return
@@ -124,6 +124,7 @@ export function PostDetailModal({ open, postId, onClose }: PostDetailModalProps)
         `/api/posts/${encodeURIComponent(postId)}/comments`
       )
       setComments(next)
+      emitActivityRefresh()
     } catch (err) {
       setCommentError(err instanceof Error ? err.message : 'Failed to comment')
     } finally {
