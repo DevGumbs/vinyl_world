@@ -4,6 +4,7 @@ export type RecordRow = {
   artistName: string
   year: number
   genre: string
+  coverImg: string | null
   vinylCondition: string
   isForTrade: boolean
   ownerUsername: string

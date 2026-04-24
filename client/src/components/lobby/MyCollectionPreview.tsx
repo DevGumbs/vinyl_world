@@ -1,17 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthProvider'
-import { api } from '../../lib/api'
+import { api, API_BASE_URL } from '../../lib/api'
+import type { RecordRow } from '../../records/recordTypes'
 
 export function MyCollectionPreview() {
   const { user, loading: authLoading } = useAuth()
   const [count, setCount] = useState<number | null>(null)
   const [loadError, setLoadError] = useState(false)
+  const [recent, setRecent] = useState<RecordRow[]>([])
+
+  const tiles = useMemo(() => {
+    return recent.map((r) => {
+      const src =
+        r.coverImg && /^https?:\/\//i.test(r.coverImg)
+          ? r.coverImg
+          : r.coverImg
+            ? `${API_BASE_URL}${r.coverImg}`
+            : '/imgs/default-cover.svg'
+      return { id: r.id, src }
+    })
+  }, [recent])
 
   useEffect(() => {
     if (authLoading) return
     if (!user) {
       setCount(null)
+      setRecent([])
       return
     }
     let cancelled = false
@@ -25,6 +40,13 @@ export function MyCollectionPreview() {
           setLoadError(true)
           setCount(0)
         }
+      })
+    api<RecordRow[]>(`/api/records/user/${encodeURIComponent(user.username)}`)
+      .then((rows) => {
+        if (!cancelled) setRecent(rows.slice(0, 4))
+      })
+      .catch(() => {
+        if (!cancelled) setRecent([])
       })
     return () => {
       cancelled = true
@@ -66,13 +88,14 @@ export function MyCollectionPreview() {
 
       {c > 0 ? (
         <div className="mt-3 grid grid-cols-4 gap-3">
-          {Array.from({ length: Math.min(4, c) }).map((_, i) => (
-            <div
-              key={i}
-              className="flex aspect-square items-center justify-center rounded border border-slate-300 bg-slate-50 text-[10px] text-slate-700"
-            >
-              Vinyl
-            </div>
+          {tiles.map((t) => (
+            <img
+              key={t.id}
+              src={t.src}
+              alt=""
+              className="aspect-square w-full rounded border border-slate-300 bg-slate-50 object-cover"
+              loading="lazy"
+            />
           ))}
         </div>
       ) : null}

@@ -11,15 +11,12 @@ router.get("/", (req, res) => {
     .prepare(
       `
       SELECT
-        p.subject_type AS subjectType,
-        p.subject_name AS subjectName,
-        t.name AS topicName,
-        COUNT(*) AS threadCount
-      FROM posts p
-      JOIN topics t ON t.id = p.topic_id
-      GROUP BY p.subject_type, p.subject_name, p.topic_id
-      HAVING COUNT(*) >= 2
-      ORDER BY threadCount DESC
+        album_title AS albumTitle,
+        artist_name AS artistName,
+        owner_username AS ownerUsername,
+        created_at AS createdAt
+      FROM records
+      ORDER BY datetime(created_at) DESC, id DESC
       LIMIT 3
     `
     )
@@ -50,10 +47,11 @@ router.get("/", (req, res) => {
         `
         SELECT
           'artist' AS subjectType,
-          artist_name AS subjectName,
+          MAX(artist_name) AS subjectName,
           COUNT(DISTINCT owner_username) AS collectionCount
         FROM records
-        GROUP BY artist_name
+        WHERE TRIM(COALESCE(artist_name, '')) <> ''
+        GROUP BY LOWER(TRIM(artist_name))
         ORDER BY collectionCount DESC, subjectName ASC
         LIMIT 3
       `
@@ -65,25 +63,28 @@ router.get("/", (req, res) => {
       .prepare(
         `
         WITH my_artists AS (
-          SELECT DISTINCT artist_name AS artistName
+          SELECT DISTINCT LOWER(TRIM(artist_name)) AS artistKey
           FROM records
           WHERE owner_username = ?
+            AND TRIM(COALESCE(artist_name, '')) <> ''
         ),
         others AS (
           SELECT
             r.owner_username AS otherUsername,
-            r.artist_name AS artistName
+            r.artist_name AS artistName,
+            LOWER(TRIM(r.artist_name)) AS artistKey
           FROM records r
-          JOIN my_artists m ON m.artistName = r.artist_name
+          JOIN my_artists m ON m.artistKey = LOWER(TRIM(r.artist_name))
           WHERE r.owner_username <> ?
+            AND TRIM(COALESCE(r.artist_name, '')) <> ''
         )
         SELECT
           'artist' AS subjectType,
-          artistName AS subjectName,
+          MAX(artistName) AS subjectName,
           otherUsername,
           COUNT(*) AS sharedCount
         FROM others
-        GROUP BY otherUsername, artistName
+        GROUP BY otherUsername, artistKey
         ORDER BY sharedCount DESC, subjectName ASC
         LIMIT 3
       `

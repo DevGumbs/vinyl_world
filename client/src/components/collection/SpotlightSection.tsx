@@ -1,17 +1,23 @@
 import type { RecordRow } from '../../records/recordTypes'
+import { coverSrc } from '../../records/cover'
 
 type SpotlightSectionProps = {
   record: RecordRow
 }
 
 export function SpotlightSection({ record }: SpotlightSectionProps) {
+  const src = coverSrc(record.coverImg)
+
   return (
     <section className="grid gap-6 rounded-2xl border border-slate-200 bg-white px-6 py-6 shadow-sm md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
       <div className="flex items-center justify-center">
         <div className="relative flex h-56 w-[18rem] items-center justify-center md:w-[20rem]">
-          <div className="absolute left-0 z-10 flex h-56 w-56 items-center justify-center rounded border border-slate-200 bg-slate-50 text-sm text-slate-700 shadow-md shadow-slate-400/40">
-            Vinyl
-          </div>
+          <img
+            src={src}
+            alt=""
+            className="absolute left-0 z-10 h-56 w-56 rounded border border-slate-200 bg-white object-cover shadow-md shadow-slate-400/40"
+            loading="lazy"
+          />
 
           <div className="absolute right-0 hidden h-52 w-52 rounded-full bg-black md:block">
             <div className="absolute inset-6 rounded-full border border-slate-900/60 bg-slate-900" />

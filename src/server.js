@@ -23,7 +23,6 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 try {
   migrate();
   ensureTopics();
-  seedRecordsIfEmpty();
 } catch (e) {
   console.error("Failed to initialize database", e);
   process.exit(1);

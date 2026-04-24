@@ -1,16 +1,21 @@
 import { Link } from 'react-router-dom'
 import type { RecordRow } from '../../records/recordTypes'
+import { coverSrc } from '../../records/cover'
 
 type TradeListingCardProps = {
   record: RecordRow
 }
 
 export function TradeListingCard({ record }: TradeListingCardProps) {
+  const src = coverSrc(record.coverImg)
   return (
     <article className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
-      <div className="flex h-16 w-16 items-center justify-center rounded border border-slate-300 bg-white text-[11px] text-slate-700">
-        Vinyl
-      </div>
+      <img
+        src={src}
+        alt=""
+        className="h-16 w-16 rounded border border-slate-300 bg-white object-cover"
+        loading="lazy"
+      />
       <div className="flex-1 space-y-1">
         <p className="text-sm font-semibold">{record.albumTitle}</p>
         <p className="text-[11px] text-slate-500">{record.artistName}</p>

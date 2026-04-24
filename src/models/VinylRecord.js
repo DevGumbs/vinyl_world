@@ -4,6 +4,7 @@ class VinylRecord {
    * @param {string} params.artistName
    * @param {number} params.year
    * @param {string} params.genre
+   * @param {string | null} [params.coverImg]
    * @param {string} [params.vinylCondition]
    * @param {boolean} [params.isForTrade]
    * @param {string} params.ownerUsername
@@ -14,6 +15,7 @@ class VinylRecord {
     artistName,
     year,
     genre,
+    coverImg = null,
     vinylCondition = "VG",
     isForTrade = false,
     ownerUsername,
@@ -30,6 +32,7 @@ class VinylRecord {
     this.artistName = String(artistName);
     this.year = Number(year);
     this.genre = String(genre);
+    this.coverImg = coverImg ? String(coverImg) : null;
     this.vinylCondition = String(vinylCondition);
     this.isForTrade = Boolean(isForTrade);
     this.ownerUsername = String(ownerUsername);

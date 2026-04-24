@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import type { RecordRow } from '../../records/recordTypes'
+import { coverSrc } from '../../records/cover'
 import { AlbumCard } from './AlbumCard'
 
 type CollectionDetailsSectionProps = {
@@ -39,12 +40,6 @@ export function CollectionDetailsSection({ username, isMe }: CollectionDetailsSe
     <div className="rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
       <div className="mb-4 flex items-center justify-between text-sm font-semibold tracking-wide">
         <h2>Collection Details</h2>
-        <Link
-          to="/shelf"
-          className="text-xs font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-600"
-        >
-          Grid View
-        </Link>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
@@ -68,7 +63,12 @@ export function CollectionDetailsSection({ username, isMe }: CollectionDetailsSe
           </p>
         ) : (
           records.slice(0, 6).map((r) => (
-            <AlbumCard key={r.id} album={r.albumTitle} artist={r.artistName} />
+            <AlbumCard
+              key={r.id}
+              album={r.albumTitle}
+              artist={r.artistName}
+              coverSrc={coverSrc(r.coverImg)}
+            />
           ))
         )}
       </div>

@@ -17,6 +17,7 @@ db.exec(`
     artist_name TEXT NOT NULL,
     year INTEGER NOT NULL,
     genre TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
     vinyl_condition TEXT NOT NULL,
     is_for_trade INTEGER NOT NULL DEFAULT 0,
     owner_username TEXT NOT NULL
@@ -55,6 +56,24 @@ db.exec(`
 
 try {
   db.exec(`ALTER TABLE posts ADD COLUMN image_url TEXT`);
+} catch {}
+
+try {
+  db.exec(`ALTER TABLE records ADD COLUMN cover_image_url TEXT`);
+} catch {}
+
+try {
+  // SQLite is picky about non-constant DEFAULTs when adding columns.
+  db.exec(`ALTER TABLE records ADD COLUMN created_at TEXT`);
+} catch {}
+
+try {
+  db.exec(`UPDATE records SET created_at = datetime('now') WHERE created_at IS NULL`);
+} catch {}
+
+// One-time cleanup: remove legacy seeded sample records (rec_001..rec_010).
+try {
+  db.exec(`DELETE FROM records WHERE id LIKE 'rec_0__'`);
 } catch {}
 
 module.exports = { migrate: () => undefined };

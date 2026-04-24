@@ -5,9 +5,10 @@ type ShelfMode = 'vintage' | 'modern' | 'retro'
 type ShelfViewHeaderProps = {
   mode: ShelfMode
   onModeChange: (mode: ShelfMode) => void
+  galleryTo?: string
 }
 
-export function ShelfViewHeader({ mode, onModeChange }: ShelfViewHeaderProps) {
+export function ShelfViewHeader({ mode, onModeChange, galleryTo = '/collection' }: ShelfViewHeaderProps) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
       <div className="flex flex-col gap-3 text-sm md:flex-row md:items-center md:justify-between">
@@ -17,7 +18,7 @@ export function ShelfViewHeader({ mode, onModeChange }: ShelfViewHeaderProps) {
             <div className="flex items-center gap-2 text-xs text-slate-500">
               <span className="font-semibold text-emerald-600 underline">Shelf</span>
               <span>/</span>
-              <Link to="/collection" className="text-slate-600 hover:text-emerald-600 hover:underline">
+              <Link to={galleryTo} className="text-slate-600 hover:text-emerald-600 hover:underline">
                 Gallery
               </Link>
             </div>
