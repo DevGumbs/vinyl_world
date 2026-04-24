@@ -1,7 +1,7 @@
 import { useEffect, useId, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthProvider'
-import { api } from '../../lib/api'
+import { api, API_BASE_URL } from '../../lib/api'
 
 type PostDetail = {
   id: string
@@ -42,6 +42,7 @@ function timeAgoLabel(iso: string) {
 export function PostDetailModal({ open, postId, onClose }: PostDetailModalProps) {
   const titleId = useId()
   const { user, loading: authLoading } = useAuth()
+  const [, setNowTick] = useState(0)
 
   const [post, setPost] = useState<PostDetail | null>(null)
   const [comments, setComments] = useState<CommentRow[]>([])
@@ -51,6 +52,7 @@ export function PostDetailModal({ open, postId, onClose }: PostDetailModalProps)
   const [commentBody, setCommentBody] = useState('')
   const [commentSubmitting, setCommentSubmitting] = useState(false)
   const [commentError, setCommentError] = useState<string | null>(null)
+  const [commentsOpen, setCommentsOpen] = useState(true)
 
   useEffect(() => {
     if (!open) {
@@ -61,6 +63,7 @@ export function PostDetailModal({ open, postId, onClose }: PostDetailModalProps)
       setCommentBody('')
       setCommentSubmitting(false)
       setCommentError(null)
+      setCommentsOpen(true)
     }
   }, [open])
 
@@ -77,6 +80,7 @@ export function PostDetailModal({ open, postId, onClose }: PostDetailModalProps)
         if (cancelled) return
         setPost(p)
         setComments(c)
+        setCommentsOpen(c.length <= 1)
       })
       .catch((e) => {
         if (cancelled) return
@@ -98,6 +102,12 @@ export function PostDetailModal({ open, postId, onClose }: PostDetailModalProps)
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [open, onClose])
+
+  useEffect(() => {
+    if (!open) return
+    const id = window.setInterval(() => setNowTick((v) => v + 1), 60_000)
+    return () => window.clearInterval(id)
+  }, [open])
 
   async function submitComment(e: React.FormEvent) {
     e.preventDefault()
@@ -122,6 +132,13 @@ export function PostDetailModal({ open, postId, onClose }: PostDetailModalProps)
   }
 
   if (!open) return null
+
+  const imageSrc =
+    post?.imageUrl && /^https?:\/\//i.test(post.imageUrl)
+      ? post.imageUrl
+      : post?.imageUrl
+        ? `${API_BASE_URL}${post.imageUrl}`
+        : null
 
   return (
     <div
@@ -203,41 +220,55 @@ export function PostDetailModal({ open, postId, onClose }: PostDetailModalProps)
                 <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-800">
                   {post.imageUrl ? (
                     <img
-                      src={post.imageUrl}
+                      src={imageSrc ?? undefined}
                       alt=""
-                      className="mb-3 w-full rounded-xl border border-slate-200 object-cover"
+                      className="mb-3 mx-auto max-h-80 w-full rounded-xl border border-slate-200 object-contain"
                     />
                   ) : null}
                   <p className="mt-2 whitespace-pre-wrap leading-relaxed">{post.body}</p>
                 </div>
 
                 <div className="mt-6">
-                  <h3 className="text-sm font-semibold text-slate-900">Comments</h3>
-                  {comments.length === 0 ? (
-                    <p className="mt-2 text-sm text-slate-500">No comments yet.</p>
-                  ) : (
-                    <div className="mt-3 space-y-3">
-                      {comments.map((c) => (
-                        <div
-                          key={c.id}
-                          className="rounded-xl border border-slate-200 bg-white p-3 text-sm"
-                        >
-                          <p className="text-xs text-slate-500">
-                            <Link
-                              to={`/u/${encodeURIComponent(c.authorUsername)}`}
-                              className="font-semibold text-slate-700 underline underline-offset-2 hover:text-emerald-600"
-                            >
-                              {c.authorUsername}
-                            </Link>{' '}
-                            • {timeAgoLabel(c.createdAt)}
-                          </p>
-                          <p className="mt-2 whitespace-pre-wrap text-slate-800">
-                            {c.body}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => setCommentsOpen((v) => !v)}
+                    className="flex w-full items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-left text-sm font-semibold text-slate-900 hover:border-emerald-500"
+                    aria-expanded={commentsOpen}
+                  >
+                    <span>
+                      Comments{' '}
+                      <span className="text-xs font-medium text-slate-500">
+                        ({comments.length})
+                      </span>
+                    </span>
+                    <span className="text-xs text-slate-600">{commentsOpen ? '▴' : '▾'}</span>
+                  </button>
+
+                  {commentsOpen ? (
+                    comments.length === 0 ? (
+                      <p className="mt-2 text-sm text-slate-500">No comments yet.</p>
+                    ) : (
+                      <div className="mt-3 space-y-3">
+                        {comments.map((c) => (
+                          <div
+                            key={c.id}
+                            className="rounded-xl border border-slate-200 bg-white p-3 text-sm"
+                          >
+                            <p className="text-xs text-slate-500">
+                              <Link
+                                to={`/u/${encodeURIComponent(c.authorUsername)}`}
+                                className="font-semibold text-slate-700 underline underline-offset-2 hover:text-emerald-600"
+                              >
+                                {c.authorUsername}
+                              </Link>{' '}
+                              • {timeAgoLabel(c.createdAt)}
+                            </p>
+                            <p className="mt-2 whitespace-pre-wrap text-slate-800">{c.body}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  ) : null}
 
                   <form onSubmit={submitComment} className="mt-4 space-y-2">
                     <label className="block text-sm font-medium text-slate-700">
@@ -250,9 +281,7 @@ export function PostDetailModal({ open, postId, onClose }: PostDetailModalProps)
                         className="mt-2 w-full resize-y rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                       />
                     </label>
-                    {commentError ? (
-                      <p className="text-sm text-rose-600">{commentError}</p>
-                    ) : null}
+                    {commentError ? <p className="text-sm text-rose-600">{commentError}</p> : null}
                     <div className="flex justify-end">
                       <button
                         type="submit"

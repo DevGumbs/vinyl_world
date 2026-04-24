@@ -111,7 +111,7 @@ export function DiscoverEngage() {
                 {data.block2.map((x, i) => (
                   <div key={`${x.subjectType}-${x.subjectName}-${x.createdAt}-${i}`}>
                     <p className="font-semibold text-slate-900">
-                      New post about {subjectLabel(x.subjectType).toLowerCase()} {x.subjectName}
+                      New post: {x.subjectName}
                     </p>
                     <p className="text-slate-600">{x.topicName}</p>
                   </div>
