@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../auth/AuthProvider'
 import { api } from '../../lib/api'
 
 type DiscoverResponse = {
   mode: 'public' | 'private'
   block1: {
-    subjectType: 'artist' | 'album'
-    subjectName: string
-    topicName: string
-    threadCount: number
+    albumTitle: string
+    artistName: string
+    ownerUsername: string
+    createdAt: string
   }[]
   block2: {
     subjectType: 'artist' | 'album'
@@ -35,14 +36,17 @@ function subjectLabel(subjectType: 'artist' | 'album') {
 }
 
 export function DiscoverEngage() {
+  const { user, loading: authLoading } = useAuth()
   const [data, setData] = useState<DiscoverResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    if (authLoading) return
     let cancelled = false
     setLoading(true)
     setError(null)
+    setData(null)
     api<DiscoverResponse>('/api/discover')
       .then((res) => {
         if (!cancelled) setData(res)
@@ -56,7 +60,7 @@ export function DiscoverEngage() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [user?.username, authLoading])
 
   const block3Title = useMemo(() => {
     if (!data) return 'Discover'
@@ -81,21 +85,18 @@ export function DiscoverEngage() {
         <div className="grid gap-3 text-xs md:grid-cols-3">
           <div className="flex flex-col justify-between rounded-xl border border-slate-200 bg-slate-50 p-3 text-center">
             <p className="text-[11px] font-semibold tracking-wide text-slate-700">
-              Discussed in multiple threads
+              Recent adds
             </p>
             {data.block1.length === 0 ? (
-              <p className="mt-2 text-slate-500">No repeat discussions yet.</p>
+              <p className="mt-2 text-slate-500">No new adds yet.</p>
             ) : (
               <div className="mt-2 space-y-2">
                 {data.block1.map((x, i) => (
-                  <div key={`${x.subjectType}-${x.subjectName}-${x.topicName}-${i}`}>
+                  <div key={`${x.ownerUsername}-${x.albumTitle}-${x.artistName}-${x.createdAt}-${i}`}>
                     <p className="font-semibold text-slate-900">
-                      {subjectLabel(x.subjectType)}: {x.subjectName}
+                      {x.albumTitle}
                     </p>
-                    <p className="text-slate-600">
-                      discussed in {x.threadCount} {x.topicName} thread
-                      {x.threadCount === 1 ? '' : 's'}
-                    </p>
+                    <p className="text-slate-600">{x.artistName}</p>
                   </div>
                 ))}
               </div>

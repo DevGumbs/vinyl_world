@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthProvider'
 import { CollectionPageHeader } from '../../components/collection/CollectionPageHeader'
+import { AddRecordModal } from '../../components/collection/AddRecordModal'
+import { EditRecordModal } from '../../components/collection/EditRecordModal'
 import { GalleryStrip } from '../../components/collection/GalleryStrip'
 import { SpotlightSection } from '../../components/collection/SpotlightSection'
 import { api } from '../../lib/api'
@@ -13,6 +15,15 @@ export default function CollectionPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [addOpen, setAddOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
+
+  async function refresh() {
+    if (!user) return
+    const rows = await api<RecordRow[]>(`/api/records/user/${encodeURIComponent(user.username)}`)
+    setRecords(rows)
+    setSelectedId((prev) => prev ?? rows[0]?.id ?? null)
+  }
 
   useEffect(() => {
     if (authLoading) return
@@ -81,6 +92,33 @@ export default function CollectionPage() {
   return (
     <main className="flex-1 space-y-6">
       <CollectionPageHeader count={records.length} />
+      <div className="flex flex-wrap justify-center gap-3">
+        <button
+          type="button"
+          onClick={() => setAddOpen(true)}
+          className="rounded-full border border-emerald-500 bg-emerald-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-emerald-600"
+        >
+          + Add Record
+        </button>
+        <button
+          type="button"
+          onClick={() => setEditOpen(true)}
+          className="rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-500 hover:text-emerald-600"
+        >
+          Edit record
+        </button>
+      </div>
+      <AddRecordModal
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        onCreated={() => void refresh()}
+      />
+      <EditRecordModal
+        open={editOpen}
+        records={records}
+        onClose={() => setEditOpen(false)}
+        onUpdated={() => void refresh()}
+      />
 
       {error ? (
         <section className="rounded-2xl border border-slate-200 bg-white px-6 py-6 text-center shadow-sm">
@@ -93,9 +131,13 @@ export default function CollectionPage() {
       ) : records.length === 0 ? (
         <section className="rounded-2xl border border-slate-200 bg-white px-6 py-6 text-center shadow-sm">
           <p className="text-sm text-slate-600">
-            <Link to="/collection" className="font-semibold text-emerald-600 underline">
+            <button
+              type="button"
+              onClick={() => setAddOpen(true)}
+              className="font-semibold text-emerald-600 underline"
+            >
               Add a record to your collection
-            </Link>
+            </button>
           </p>
         </section>
       ) : (

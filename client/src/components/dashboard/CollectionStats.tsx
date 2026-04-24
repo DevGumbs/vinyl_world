@@ -26,8 +26,8 @@ export function CollectionStats({ stats = DEFAULT_STATS }: { stats?: StatItem[] 
             key={s.label}
             className="flex flex-col items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-4 text-center"
           >
-            <p className="text-[11px] text-slate-300">{s.label}</p>
-            <p className="mt-1 text-sm font-semibold">{s.value}</p>
+            <p className="text-[11px] text-slate-500">{s.label}</p>
+            <p className="mt-1 text-sm font-semibold text-slate-900">{s.value}</p>
           </div>
         ))}
       </div>

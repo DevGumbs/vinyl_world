@@ -1,4 +1,5 @@
 import type { RecordRow } from '../../records/recordTypes'
+import { coverSrc } from '../../records/cover'
 
 type GalleryStripProps = {
   records: RecordRow[]
@@ -21,6 +22,7 @@ export function GalleryStrip({ records, selectedId, onSelect }: GalleryStripProp
         <div className="flex min-w-0 flex-1 items-center gap-4 overflow-x-auto pb-2">
           {records.map((r) => {
             const active = r.id === selectedId
+            const src = coverSrc(r.coverImg)
             return (
               <button
                 key={r.id}
@@ -30,9 +32,12 @@ export function GalleryStrip({ records, selectedId, onSelect }: GalleryStripProp
                   active ? 'border-emerald-500 ring-1 ring-emerald-500' : 'border-slate-200'
                 }`}
               >
-                <div className="mb-2 flex h-14 w-14 items-center justify-center rounded border border-slate-300 text-[11px] text-slate-700">
-                  Vinyl
-                </div>
+                <img
+                  src={src}
+                  alt=""
+                  className="mb-2 h-14 w-14 rounded border border-slate-300 bg-white object-cover"
+                  loading="lazy"
+                />
                 <span className="max-w-[6.5rem] truncate text-[11px] text-slate-600">
                   {r.artistName}
                 </span>
