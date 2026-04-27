@@ -11,7 +11,7 @@ import { api } from '../../lib/api'
 import type { RecordRow } from '../../records/recordTypes'
 
 export default function CollectionPage() {
-  const { user, loading: authLoading } = useAuth()
+  const { user, loading: authLoading, refresh: refreshAuth } = useAuth()
   const [records, setRecords] = useState<RecordRow[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -63,8 +63,7 @@ export default function CollectionPage() {
 
   if (authLoading) {
     return (
-      <main className="flex-1 space-y-6">
-        <CollectionPageHeader count={0} />
+      <main className="flex-1">
         <p className="text-center text-sm text-slate-500">Loading…</p>
       </main>
     )
@@ -72,9 +71,8 @@ export default function CollectionPage() {
 
   if (!user) {
     return (
-      <main className="flex-1 space-y-6">
-        <CollectionPageHeader count={0} />
-        <section className="rounded-2xl border border-slate-200 bg-white px-6 py-6 text-center shadow-sm">
+      <main className="flex-1">
+        <section className="rounded-2xl border border-slate-200 bg-white px-6 py-10 text-center shadow-sm">
           <p className="text-sm text-slate-600">
             <Link to="/sign-in" className="font-semibold text-emerald-600 underline">
               Sign in
@@ -92,7 +90,20 @@ export default function CollectionPage() {
 
   return (
     <main className="flex-1 space-y-6">
-      <CollectionPageHeader count={records.length} />
+      <CollectionPageHeader
+        username={user.username}
+        collectionName={user.collectionName ?? null}
+        count={records.length}
+        shelfTo="/shelf"
+        showEdit
+        onCollectionNameSave={async (name) => {
+          await api('/auth/collection-name', {
+            method: 'PATCH',
+            body: JSON.stringify({ collectionName: name }),
+          })
+          await refreshAuth()
+        }}
+      />
       <div className="flex flex-wrap justify-center gap-3">
         <button
           type="button"

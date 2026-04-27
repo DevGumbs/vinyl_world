@@ -63,19 +63,100 @@ app.use(
 );
 
 function safeUser(u) {
+  const cn = u.collectionName;
   return {
     id: u.id,
     email: u.email,
     username: u.username,
     city: u.city,
     state: u.state,
+    collectionName:
+      typeof cn === "string" && cn.trim() !== "" ? cn.trim() : null,
   };
 }
 
 app.get("/auth/me", (req, res) => {
-  const user = req.session.user;
-  if (!user) return res.status(401).json({ user: null });
-  return res.json({ user });
+  if (!req.session || !req.session.user) {
+    return res.status(401).json({ user: null });
+  }
+  const row = db
+    .prepare(
+      `
+      SELECT
+        id,
+        email,
+        username,
+        city,
+        state,
+        collection_name AS collectionName
+      FROM users
+      WHERE id = ?
+    `
+    )
+    .get(req.session.user.id);
+  if (!row) return res.status(401).json({ user: null });
+  return res.json({ user: safeUser(row) });
+});
+
+app.get("/api/users/:username/collection", (req, res) => {
+  const username = String(req.params.username);
+  const row = db
+    .prepare(
+      `
+      SELECT
+        username,
+        collection_name AS collectionName,
+        city,
+        state
+      FROM users
+      WHERE username = ?
+      LIMIT 1
+    `
+    )
+    .get(username);
+  if (!row) return res.status(404).json({ error: "User not found" });
+  return res.json({
+    username: row.username,
+    collectionName:
+      row.collectionName && String(row.collectionName).trim()
+        ? String(row.collectionName).trim()
+        : null,
+    city: String(row.city ?? "").trim(),
+    state: String(row.state ?? "").trim(),
+  });
+});
+
+app.patch("/auth/collection-name", (req, res) => {
+  if (!req.session || !req.session.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const raw = req.body?.collectionName;
+  const str = raw == null ? "" : String(raw).trim();
+  const value = str === "" ? null : str.slice(0, 200);
+
+  db.prepare("UPDATE users SET collection_name = ? WHERE id = ?").run(
+    value,
+    req.session.user.id
+  );
+
+  const row = db
+    .prepare(
+      `
+      SELECT
+        id,
+        email,
+        username,
+        city,
+        state,
+        collection_name AS collectionName
+      FROM users
+      WHERE id = ?
+    `
+    )
+    .get(req.session.user.id);
+
+  return res.json({ user: safeUser(row) });
 });
 
 app.post("/auth/register", async (req, res) => {
@@ -130,7 +211,22 @@ app.post("/auth/register", async (req, res) => {
     user.state
   );
 
-  const safe = safeUser(user);
+  const row = db
+    .prepare(
+      `
+      SELECT
+        id,
+        email,
+        username,
+        city,
+        state,
+        collection_name AS collectionName
+      FROM users
+      WHERE id = ?
+    `
+    )
+    .get(user.id);
+  const safe = safeUser(row);
   req.session.user = safe;
   return res.status(201).json({ user: safe });
 });
@@ -154,7 +250,8 @@ app.post("/auth/login", async (req, res) => {
         username,
         password_hash AS passwordHash,
         city,
-        state
+        state,
+        collection_name AS collectionName
       FROM users
       WHERE email = ?
       LIMIT 1
@@ -167,7 +264,8 @@ app.post("/auth/login", async (req, res) => {
   const ok = await bcrypt.compare(passwordStr, user.passwordHash);
   if (!ok) return res.status(401).json({ error: "Invalid credentials" });
 
-  const safe = safeUser(user);
+  const { passwordHash: _p, ...forSafe } = user;
+  const safe = safeUser(forSafe);
   req.session.user = safe;
   return res.json({ user: safe });
 });
