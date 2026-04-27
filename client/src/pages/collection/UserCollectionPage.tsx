@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { api } from '../../lib/api'
 import { CollectionPageHeader } from '../../components/collection/CollectionPageHeader'
@@ -19,8 +19,11 @@ const BG: Record<ShelfMode, string> = {
 
 export default function UserCollectionPage() {
   const { username } = useParams()
-  const { user, loading: authLoading } = useAuth()
+  const { user, loading: authLoading, refresh: refreshAuth } = useAuth()
   const [records, setRecords] = useState<RecordRow[]>([])
+  const [collectionMeta, setCollectionMeta] = useState<{
+    collectionName: string | null
+  } | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -43,6 +46,19 @@ export default function UserCollectionPage() {
   }
 
   const isMe = !authLoading && Boolean(user) && user?.username === owner
+
+  const loadCollectionMeta = useCallback(() => {
+    if (!owner) return Promise.resolve()
+    return api<{ collectionName: string | null }>(
+      `/api/users/${encodeURIComponent(owner)}/collection`
+    )
+      .then((d) => setCollectionMeta({ collectionName: d.collectionName }))
+      .catch(() => setCollectionMeta({ collectionName: null }))
+  }, [owner])
+
+  useEffect(() => {
+    void loadCollectionMeta()
+  }, [loadCollectionMeta])
 
   useEffect(() => {
     if (!owner) return
@@ -79,10 +95,22 @@ export default function UserCollectionPage() {
         </div>
       ) : (
         <CollectionPageHeader
+          username={owner}
+          collectionName={collectionMeta?.collectionName ?? null}
           count={records.length}
-          title={`${owner}'s Collection`}
-          subtitle=""
           showEdit={isMe}
+          onCollectionNameSave={
+            isMe
+              ? async (name) => {
+                  await api('/auth/collection-name', {
+                    method: 'PATCH',
+                    body: JSON.stringify({ collectionName: name }),
+                  })
+                  await refreshAuth()
+                  await loadCollectionMeta()
+                }
+              : undefined
+          }
           shelfTo={`/collection/${encodeURIComponent(owner)}?view=shelf&bg=${encodeURIComponent(mode)}`}
         />
       )}

@@ -84,6 +84,10 @@ try {
   db.exec(`ALTER TABLE records ADD COLUMN listed_for_trade_at TEXT`);
 } catch {}
 
+try {
+  db.exec(`ALTER TABLE users ADD COLUMN collection_name TEXT`);
+} catch {}
+
 // One-time cleanup: remove legacy seeded sample records (rec_001..rec_010).
 try {
   db.exec(`DELETE FROM records WHERE id LIKE 'rec_0__'`);
